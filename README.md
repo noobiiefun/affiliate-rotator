@@ -22,7 +22,7 @@ Website affiliate dengan sistem rotator produk untuk OBS livestreaming. Pengunju
 | **Phase 3** | ✅ Done | Dashboard: Rotator Manager (buat, kelola produk, drag & drop urutan) |
 | **Phase 4** | ✅ Done | OBS Overlay + slug custom URL + tema penuh (warna, ukuran, posisi, logo) + grup rotator |
 | **Phase 5** | ✅ Done | Landing Page Produk (mobile-responsive, SEO, tracking klik, deploy Vercel) |
-| **Phase 6** | 🔄 Next | Sistem Login Admin + Analytics Dashboard |
+| **Phase 6** | ✅ Done | Sistem Login Admin (Supabase Auth) + Analytics Dashboard (grafik klik, top produk) |
 
 ---
 
@@ -179,3 +179,24 @@ Setiap rotator bisa dikustomisasi penuh dari dashboard:
 1. Di Supabase dashboard → **Storage** → **New bucket**
 2. Nama bucket: `logos`
 3. Centang **Public bucket** → Create
+
+---
+
+## 🔐 Cara Buat Akun Admin
+
+1. Buka **Supabase Dashboard** → **Authentication** → **Users**
+2. Klik **"Add user"** → isi email & password
+3. Login di `/login` dengan email & password tadi
+
+### Keamanan Tambahan (Supabase)
+- **Authentication → Settings → Disable email signup** → matikan agar tidak ada yang bisa daftar sendiri
+- Dashboard hanya bisa diakses user yang Anda buat manual di Supabase
+
+---
+
+## 📊 Fitur Analytics
+
+- Grafik klik harian (30 hari terakhir) dengan bar chart interaktif
+- Sumber klik: QR Scan, Direct Link, Share
+- Top 8 produk terpopuler dengan progress bar
+- Stats: total klik, klik hari ini, klik 7 hari
