@@ -22,7 +22,7 @@ Website affiliate dengan sistem rotator produk untuk OBS livestreaming. Pengunju
 | **Phase 3** | 🔄 Next | Dashboard: Rotator Manager |
 | **Phase 4** | ⏳ | OBS Overlay: rotator + QR Code |
 | **Phase 5** | ⏳ | Landing Page Produk (tampilan marketplace) |
-| **Phase 6** | ⏳ | Analytics Dashboard |
+| **Phase 6** | ⏳ | Sistem Login Admin + Analytics Dashboard |
 
 ---
 
@@ -50,11 +50,11 @@ npm install
 1. Buat akun di [supabase.com](https://supabase.com)
 2. Buat project baru — pilih region **Southeast Asia (Singapore)**
 3. Buka **SQL Editor** → **New query**
-4. Copy-paste isi file `supabase/schema.sql` → klik **Run**
+4. Buka file `supabase/schema.sql` di komputer → **Ctrl+A** → **Ctrl+C** → paste ke SQL Editor → klik **Run**
 5. Ambil credentials dari **Settings → API Keys**:
-   - **Project URL** → dari Settings → General → scroll ke bawah
-   - **Publishable key** → `anon` key (tab "Legacy anon, service_role API keys")
-   - **Secret key** → `service_role` key (klik Reveal dulu)
+   - **Project URL** → Settings → General → scroll ke bawah
+   - **Anon key** → tab "Legacy anon, service_role API keys" → row `anon`
+   - **Service role key** → row `service_role` → klik Reveal dulu
 
 ### 3. Setup Environment Variables
 
@@ -68,7 +68,7 @@ Edit `.env.local`:
 NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxx.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
 SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
+NEXT_PUBLIC_BASE_URL=http://localhost:9780
 IP_HASH_SALT=random-string-bebas
 ```
 
@@ -80,23 +80,20 @@ IP_HASH_SALT=random-string-bebas
 npm run dev
 ```
 
-Port otomatis dibaca dari `NEXT_PUBLIC_BASE_URL` di `.env.local`. Tidak perlu perintah tambahan.
+Port otomatis dibaca dari `NEXT_PUBLIC_BASE_URL` di `.env.local` oleh `dev.js`.
 
 ---
 
 ## 🔢 Mengubah Port
 
-Cukup ubah port di `NEXT_PUBLIC_BASE_URL` dalam `.env.local`, lalu jalankan `npm run dev`:
+Cukup ubah port di `NEXT_PUBLIC_BASE_URL` dalam `.env.local`:
 
 ```env
-# Jalan di port 9780
+# Contoh pakai port 9780
 NEXT_PUBLIC_BASE_URL=http://localhost:9780
-
-# Jalan di port 3000
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
 
-Port dibaca otomatis oleh `dev.js` — tidak perlu mengubah apapun lagi.
+Lalu jalankan `npm run dev` — port otomatis ikut.
 
 ---
 
@@ -125,9 +122,21 @@ affiliate-rotator/
 ├── types/
 │   └── index.ts              # TypeScript types
 ├── supabase/
-│   └── schema.sql            # Database schema
+│   └── schema.sql            # Database schema (jalankan di Supabase SQL Editor)
 └── dev.js                    # Script baca port dari .env.local
 ```
+
+---
+
+## 🗄️ Catatan Database (RLS)
+
+Schema sudah menyertakan policy RLS untuk semua role:
+
+| Role | Akses |
+|------|-------|
+| **Public** | Baca produk & rotator aktif, insert click events |
+| **Anon** | Full access — untuk dashboard development (Phase 6 akan diganti login) |
+| **Authenticated** | Full access — untuk admin yang sudah login |
 
 ---
 
@@ -142,13 +151,4 @@ affiliate-rotator/
 
 ## 🌐 Deploy ke Vercel
 
-```bash
-# Connect GitHub repo di vercel.com
-# Tambahkan environment variables di Settings → Environment Variables
-```
-
-Atau via CLI:
-```bash
-npm i -g vercel
-vercel
-```
+Connect GitHub repo di [vercel.com](https://vercel.com) → tambahkan semua environment variables di **Settings → Environment Variables** → deploy otomatis setiap push.
