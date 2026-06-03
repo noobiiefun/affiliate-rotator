@@ -20,7 +20,7 @@ Website affiliate dengan sistem rotator produk untuk OBS livestreaming. Pengunju
 | **Phase 1** | ✅ Done | Project setup, struktur folder, database schema |
 | **Phase 2** | ✅ Done | App directory, dashboard layout, manajemen produk (CRUD) |
 | **Phase 3** | ✅ Done | Dashboard: Rotator Manager (buat, kelola produk, drag & drop urutan) |
-| **Phase 4** | ✅ Done | OBS Overlay: QR code berputar, progress bar, transparan untuk OBS |
+| **Phase 4** | ✅ Done | OBS Overlay + slug custom URL + tema penuh (warna, ukuran, posisi, logo) + grup rotator |
 | **Phase 5** | 🔄 Next | Landing Page Produk (tampilan marketplace) |
 | **Phase 6** | ⏳ | Sistem Login Admin + Analytics Dashboard |
 
@@ -152,3 +152,30 @@ Schema sudah menyertakan policy RLS untuk semua role:
 ## 🌐 Deploy ke Vercel
 
 Connect GitHub repo di [vercel.com](https://vercel.com) → tambahkan semua environment variables di **Settings → Environment Variables** → deploy otomatis setiap push.
+
+---
+
+## 🎨 Fitur Tema Rotator (Phase 4+)
+
+Setiap rotator bisa dikustomisasi penuh dari dashboard:
+
+| Setting | Pilihan |
+|---------|---------|
+| **URL OBS** | Custom slug: `/obs/flash-sale`, `/obs/elektronik`, dll |
+| **Grup** | Kelompokkan rotator per acara/kategori |
+| **Warna background** | Pilih dari preset atau custom color picker |
+| **Warna aksen** | Progress bar, badge, efek glow |
+| **Warna teks** | Warna nama produk |
+| **Ukuran kartu** | Kecil (200px) / Sedang (260px) / Besar (320px) |
+| **Posisi** | Pojok kiri bawah/kanan, atas, atau tengah |
+| **Sudut kartu** | 0px (kotak) sampai 32px (bulat) |
+| **Transparansi** | 30% – 100% |
+| **Logo/Watermark** | Upload PNG/SVG, tampil di pojok kartu |
+| **Tampilkan harga** | On/Off |
+| **Tampilkan marketplace** | On/Off |
+
+### Setup Supabase Storage (untuk upload logo)
+
+1. Di Supabase dashboard → **Storage** → **New bucket**
+2. Nama bucket: `logos`
+3. Centang **Public bucket** → Create
