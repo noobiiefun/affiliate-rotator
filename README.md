@@ -20,8 +20,8 @@ Website affiliate dengan sistem rotator produk untuk OBS livestreaming. Pengunju
 | **Phase 1** | ✅ Done | Project setup, struktur folder, database schema |
 | **Phase 2** | ✅ Done | App directory, dashboard layout, manajemen produk (CRUD) |
 | **Phase 3** | ✅ Done | Dashboard: Rotator Manager (buat, kelola produk, drag & drop urutan) |
-| **Phase 4** | 🔄 Next | OBS Overlay: rotator + QR Code |
-| **Phase 5** | ⏳ | Landing Page Produk (tampilan marketplace) |
+| **Phase 4** | ✅ Done | OBS Overlay: QR code berputar, progress bar, transparan untuk OBS |
+| **Phase 5** | 🔄 Next | Landing Page Produk (tampilan marketplace) |
 | **Phase 6** | ⏳ | Sistem Login Admin + Analytics Dashboard |
 
 ---
