@@ -77,46 +77,26 @@ IP_HASH_SALT=random-string-bebas
 ### 4. Jalankan Development Server
 
 ```bash
-# Port default 3000
 npm run dev
-
-# Port kustom (misal 9780)
-npm run dev:9780
-
-# Atau set via environment variable (Linux/Mac)
-PORT=9780 npm run dev
-
-# Windows Command Prompt
-set PORT=9780 && npm run dev
-
-# Windows PowerShell
-$env:PORT=9780; npm run dev
 ```
+
+Port otomatis dibaca dari `NEXT_PUBLIC_BASE_URL` di `.env.local`. Tidak perlu perintah tambahan.
 
 ---
 
 ## 🔢 Mengubah Port
 
-Port **tidak** diatur dari `.env.local`. Ada dua cara:
+Cukup ubah port di `NEXT_PUBLIC_BASE_URL` dalam `.env.local`, lalu jalankan `npm run dev`:
 
-**Cara 1 — Pakai script bawaan** (paling mudah):
-```bash
-npm run dev:9780
-```
-
-**Cara 2 — Langsung di terminal**:
-```bash
-# Windows CMD
-npx next dev -p 9780
-
-# Windows PowerShell
-npx next dev -p 9780
-```
-
-Lalu update `NEXT_PUBLIC_BASE_URL` di `.env.local` sesuai port yang dipakai:
 ```env
+# Jalan di port 9780
 NEXT_PUBLIC_BASE_URL=http://localhost:9780
+
+# Jalan di port 3000
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
 ```
+
+Port dibaca otomatis oleh `dev.js` — tidak perlu mengubah apapun lagi.
 
 ---
 
@@ -144,8 +124,9 @@ affiliate-rotator/
 │   └── utils.ts              # Helper functions
 ├── types/
 │   └── index.ts              # TypeScript types
-└── supabase/
-    └── schema.sql            # Database schema
+├── supabase/
+│   └── schema.sql            # Database schema
+└── dev.js                    # Script baca port dari .env.local
 ```
 
 ---
