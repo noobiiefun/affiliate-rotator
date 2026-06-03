@@ -4,7 +4,7 @@ Website affiliate dengan sistem rotator produk untuk OBS livestreaming. Pengunju
 
 ## ✨ Fitur
 
-- **QR Rotator untuk OBS** → tampilan overlay yang berputar otomatis antar produk
+- **QR Rotator untuk OBS** → overlay yang berputar otomatis antar produk
 - **Landing Page Produk** → tampilan seperti marketplace (tanpa keranjang)
 - **Dashboard Admin** → kelola produk & rotator
 - **Universal Link** → support semua marketplace (Tokopedia, Shopee, Lazada, TikTok, Blibli)
@@ -18,9 +18,9 @@ Website affiliate dengan sistem rotator produk untuk OBS livestreaming. Pengunju
 | Phase | Status | Deskripsi |
 |-------|--------|-----------|
 | **Phase 1** | ✅ Done | Project setup, struktur folder, database schema |
-| **Phase 2** | 🔄 Next | Dashboard: Manajemen Produk (CRUD) |
-| **Phase 3** | ⏳ | Dashboard: Rotator Manager |
-| **Phase 4** | ⏳ | OBS Overlay: Halaman rotator + QR Code |
+| **Phase 2** | ✅ Done | App directory, dashboard layout, manajemen produk (CRUD) |
+| **Phase 3** | 🔄 Next | Dashboard: Rotator Manager |
+| **Phase 4** | ⏳ | OBS Overlay: rotator + QR Code |
 | **Phase 5** | ⏳ | Landing Page Produk (tampilan marketplace) |
 | **Phase 6** | ⏳ | Analytics Dashboard |
 
@@ -40,7 +40,7 @@ Website affiliate dengan sistem rotator produk untuk OBS livestreaming. Pengunju
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/USERNAME/affiliate-rotator.git
+git clone https://github.com/noobiiefun/affiliate-rotator.git
 cd affiliate-rotator
 npm install
 ```
@@ -48,10 +48,13 @@ npm install
 ### 2. Setup Supabase
 
 1. Buat akun di [supabase.com](https://supabase.com)
-2. Buat project baru
-3. Buka **SQL Editor** di Supabase dashboard
-4. Copy-paste isi file `supabase/schema.sql` dan jalankan
-5. Copy API keys dari **Settings → API**
+2. Buat project baru — pilih region **Southeast Asia (Singapore)**
+3. Buka **SQL Editor** → **New query**
+4. Copy-paste isi file `supabase/schema.sql` → klik **Run**
+5. Ambil credentials dari **Settings → API Keys**:
+   - **Project URL** → dari Settings → General → scroll ke bawah
+   - **Publishable key** → `anon` key (tab "Legacy anon, service_role API keys")
+   - **Secret key** → `service_role` key (klik Reveal dulu)
 
 ### 3. Setup Environment Variables
 
@@ -59,23 +62,61 @@ npm install
 cp .env.example .env.local
 ```
 
-Edit `.env.local` dan isi dengan credentials Supabase Anda:
+Edit `.env.local`:
 
 ```env
-NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
-SUPABASE_SERVICE_ROLE_KEY=your-service-role-key
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...
 NEXT_PUBLIC_BASE_URL=http://localhost:3000
-IP_HASH_SALT=random-string-rahasia
+IP_HASH_SALT=random-string-bebas
 ```
+
+> ⚠️ File `.env.local` sudah ada di `.gitignore` — tidak akan ikut ke GitHub.
 
 ### 4. Jalankan Development Server
 
 ```bash
+# Port default 3000
 npm run dev
+
+# Port kustom (misal 9780)
+npm run dev:9780
+
+# Atau set via environment variable (Linux/Mac)
+PORT=9780 npm run dev
+
+# Windows Command Prompt
+set PORT=9780 && npm run dev
+
+# Windows PowerShell
+$env:PORT=9780; npm run dev
 ```
 
-Buka [http://localhost:3000](http://localhost:3000)
+---
+
+## 🔢 Mengubah Port
+
+Port **tidak** diatur dari `.env.local`. Ada dua cara:
+
+**Cara 1 — Pakai script bawaan** (paling mudah):
+```bash
+npm run dev:9780
+```
+
+**Cara 2 — Langsung di terminal**:
+```bash
+# Windows CMD
+npx next dev -p 9780
+
+# Windows PowerShell
+npx next dev -p 9780
+```
+
+Lalu update `NEXT_PUBLIC_BASE_URL` di `.env.local` sesuai port yang dipakai:
+```env
+NEXT_PUBLIC_BASE_URL=http://localhost:9780
+```
 
 ---
 
@@ -85,20 +126,19 @@ Buka [http://localhost:3000](http://localhost:3000)
 affiliate-rotator/
 ├── app/
 │   ├── (dashboard)/          # Halaman dashboard admin
-│   │   ├── dashboard/        # Overview & analytics
-│   │   ├── products/         # Manajemen produk
-│   │   └── rotator/          # Manajemen rotator
+│   │   ├── layout.tsx        # Sidebar navigasi
+│   │   ├── dashboard/        # Overview & quick actions
+│   │   ├── products/         # Manajemen produk (CRUD)
+│   │   └── rotator/          # Manajemen rotator (Phase 3)
 │   ├── (public)/             # Halaman publik
-│   │   ├── p/[slug]/         # Landing page produk
-│   │   └── obs/[rotatorId]/  # OBS overlay (rotator + QR)
-│   └── api/                  # API routes
-│       ├── products/
-│       ├── rotator/
-│       └── click/            # Tracking klik
+│   │   ├── p/[slug]/         # Landing page produk (Phase 5)
+│   │   └── obs/[rotatorId]/  # OBS overlay (Phase 4)
+│   ├── api/                  # API routes
+│   ├── layout.tsx            # Root layout
+│   └── globals.css
 ├── components/
-│   ├── dashboard/            # Komponen dashboard
-│   ├── obs/                  # Komponen OBS overlay
-│   └── product/              # Komponen landing page
+│   └── dashboard/
+│       └── ProductForm.tsx   # Form tambah/edit produk
 ├── lib/
 │   ├── supabase.ts           # Supabase client
 │   └── utils.ts              # Helper functions
@@ -110,34 +150,24 @@ affiliate-rotator/
 
 ---
 
-## 🎬 Cara Pakai di OBS
+## 🎬 Cara Pakai di OBS (Phase 4)
 
 1. Buka OBS → Add Source → **Browser**
 2. URL: `https://your-domain.com/obs/[rotator-id]`
-3. Width: `400`, Height: `500` (sesuaikan)
+3. Width: `400`, Height: `500`
 4. Centang **"Refresh browser when scene becomes active"**
-
-QR code akan berputar otomatis sesuai interval yang diset di dashboard.
 
 ---
 
 ## 🌐 Deploy ke Vercel
 
 ```bash
-# Install Vercel CLI
-npm i -g vercel
-
-# Deploy
-vercel
-
-# Set environment variables di Vercel dashboard
-# Settings → Environment Variables
+# Connect GitHub repo di vercel.com
+# Tambahkan environment variables di Settings → Environment Variables
 ```
 
-Atau connect GitHub repo langsung di [vercel.com](https://vercel.com) untuk auto-deploy.
-
----
-
-## 📝 Lisensi
-
-MIT License - bebas digunakan untuk kebutuhan pribadi maupun komersial.
+Atau via CLI:
+```bash
+npm i -g vercel
+vercel
+```
