@@ -445,6 +445,13 @@ Buka **Issues** di halaman GitHub repository ini dan sertakan:
 3. OS yang dipakai (Windows 10/11, Mac, Linux)
 
 ---
+## Follow My Social Media
+intagram : instagram.com/ypnbfngm/
+tiktok : tiktok.com/@yp.nbfngm/
+youtube : youtube.com/@YP.NBFNGM
+facebook : facebook.com/yp.nbfngm
+
+
 
 <div align="center">
   <p>Dibuat dengan ❤️ menggunakan Next.js + Supabase + Vercel</p>
