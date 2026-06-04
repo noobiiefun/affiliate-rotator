@@ -39,13 +39,39 @@ export interface Product {
   name:          string
   description:   string | null
   price:         number | null
-  image_url:     string | null
+  image_url:     string | null   // gambar utama (legacy, tetap dipakai di OBS)
+  images:        string[]        // array semua gambar (untuk landing page)
+  video_url:     string | null   // URL video YouTube/TikTok (opsional)
   affiliate_url: string
   marketplace:   Marketplace
   slug:          string
   is_active:     boolean
   created_at:    string
   updated_at:    string
+}
+
+// Helper: ambil semua gambar produk (gabung image_url + images, tanpa duplikat)
+export function getProductImages(product: Product): string[] {
+  const all: string[] = []
+  if (product.image_url) all.push(product.image_url)
+  if (product.images?.length) {
+    product.images.forEach(img => { if (img && !all.includes(img)) all.push(img) })
+  }
+  return all
+}
+
+// Helper: detect video embed URL
+export function getVideoEmbedUrl(url: string | null): string | null {
+  if (!url) return null
+  // YouTube
+  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([\w-]+)/)
+  if (ytMatch) return `https://www.youtube.com/embed/${ytMatch[1]}`
+  // YouTube Shorts
+  const ytShorts = url.match(/youtube\.com\/shorts\/([\w-]+)/)
+  if (ytShorts) return `https://www.youtube.com/embed/${ytShorts[1]}`
+  // TikTok (embed tidak support semua, pakai link langsung)
+  if (url.includes('tiktok.com')) return url
+  return null
 }
 
 export interface RotatorGroup {
