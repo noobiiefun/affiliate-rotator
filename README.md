@@ -1,27 +1,42 @@
-# 🔄 Affiliate Rotator
+<div align="center">
 
-Website affiliate dengan sistem rotator QR code untuk OBS livestreaming.
+# 📺 Affiliate Rotator
 
-**Cara kerjanya:**
-1. Anda live streaming di TikTok/YouTube/dll
-2. Di layar muncul kartu produk + QR code yang berputar otomatis
-3. Penonton scan QR → masuk ke halaman produk
-4. Penonton klik tombol beli → diarahkan ke Shopee/Tokopedia/dll
-5. Anda dapat komisi affiliate! 🎉
+**Website affiliate dengan QR code rotator untuk OBS livestreaming**
+
+Penonton scan QR → landing page produk → klik beli → komisi masuk 💰
+
+[![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
+[![Supabase](https://img.shields.io/badge/Supabase-gratis-green?logo=supabase)](https://supabase.com)
+[![Vercel](https://img.shields.io/badge/Vercel-gratis-black?logo=vercel)](https://vercel.com)
+
+</div>
 
 ---
 
-## ✅ Fitur Lengkap
+## 🎯 Cara Kerja
 
-- 🎬 **OBS Overlay** — kartu produk + QR code berputar otomatis di layar streaming
-- 🛍️ **Landing Page Produk** — halaman produk yang rapi, bisa dibuka dari HP maupun PC
-- 📊 **Dashboard Admin** — kelola produk, rotator, dan lihat statistik klik
-- 🎨 **Tema Custom** — warna, ukuran, posisi overlay bisa diatur sendiri
-- 📁 **Grup Rotator** — kelompokkan rotator per event/kategori
-- 🔗 **Universal Link** — support Tokopedia, Shopee, Lazada, TikTok Shop, Blibli
-- 📈 **Analytics** — grafik klik harian, produk terpopuler, sumber klik
-- 🔐 **Login Admin** — dashboard hanya bisa diakses Anda
-- 📱 **Mobile Friendly** — landing page responsif di semua ukuran layar
+```
+[Live Streaming] → [OBS menampilkan QR + info produk] → [Penonton scan QR]
+      → [Landing page produk muncul di HP] → [Klik "Beli"] → [Masuk marketplace]
+```
+
+---
+
+## ✨ Fitur
+
+| Fitur | Keterangan |
+|-------|-----------|
+| 🎬 **OBS Overlay** | Kartu produk + QR code berputar otomatis |
+| 🛍️ **Landing Page** | Halaman produk rapi, mobile-friendly |
+| 📸 **Multiple Gambar** | Upload banyak foto produk + galeri |
+| 🎥 **Embed Video** | Tempel video YouTube di halaman produk |
+| 🎨 **Tema Custom** | Warna, ukuran, posisi overlay bebas diatur |
+| 📁 **Grup Rotator** | Kelompokkan rotator per event/kategori |
+| 🔗 **Universal Link** | Support semua marketplace Indonesia |
+| 📊 **Analytics** | Grafik klik harian, top produk, sumber klik |
+| 🔐 **Login Admin** | Dashboard hanya bisa diakses Anda |
+| 📱 **Responsive** | Tampil sempurna di HP maupun PC |
 
 ---
 
@@ -29,337 +44,409 @@ Website affiliate dengan sistem rotator QR code untuk OBS livestreaming.
 
 | Fase | Status | Isi |
 |------|--------|-----|
-| Phase 1 | ✅ Selesai | Setup project & database |
-| Phase 2 | ✅ Selesai | Dashboard & manajemen produk |
-| Phase 3 | ✅ Selesai | Rotator manager (drag & drop) |
-| Phase 4 | ✅ Selesai | OBS overlay + tema custom + grup |
-| Phase 5 | ✅ Selesai | Landing page produk (SEO, mobile) |
-| Phase 6 | ✅ Selesai | Login admin + analytics dashboard |
+| Phase 1 | ✅ | Setup project & database |
+| Phase 2 | ✅ | Dashboard & manajemen produk |
+| Phase 3 | ✅ | Rotator manager (drag & drop urutan) |
+| Phase 4 | ✅ | OBS overlay + tema custom + grup rotator |
+| Phase 5 | ✅ | Landing page (galeri foto, video embed) |
+| Phase 6 | ✅ | Login admin + analytics dashboard |
 
 ---
 
-# 🚀 PANDUAN INSTALASI LENGKAP
+# 🚀 PANDUAN INSTALASI
 
-> Panduan ini dibuat untuk pemula. Ikuti langkah demi langkah, jangan dilewat.
-
----
-
-## BAGIAN 1 — Persiapan Akun (Gratis Semua!)
-
-Anda perlu daftar di 3 layanan berikut. Semuanya **gratis**.
-
-### 1A. Buat Akun GitHub
-> GitHub adalah tempat menyimpan kode program Anda di internet.
-
-1. Buka [github.com](https://github.com) → klik **Sign up**
-2. Isi email, password, username → selesaikan verifikasi
-3. Akun GitHub Anda sudah siap ✅
+> **Untuk pemula:** Ikuti langkah demi langkah. Jangan dilewat satupun.
+> Estimasi waktu: ±30 menit
 
 ---
 
-### 1B. Buat Akun Supabase
-> Supabase adalah database gratis untuk menyimpan data produk Anda.
+## BAGIAN 1 — Daftar Akun Gratis
 
-1. Buka [supabase.com](https://supabase.com) → klik **Start your project**
-2. Pilih **Continue with GitHub** (login pakai akun GitHub tadi)
-3. Setelah masuk, klik **New Project**
-4. Isi formulir:
-   - **Organization**: biarkan default
-   - **Project name**: `affiliate-rotator`
-   - **Database Password**: buat password yang kuat, **simpan di notepad!**
-   - **Region**: pilih `Southeast Asia (Singapore)`
-5. Klik **Create new project** → tunggu sekitar 2 menit sampai selesai ✅
+Anda butuh **3 akun**, semuanya gratis selamanya untuk skala personal.
+
+### 🐙 1A. GitHub
+> Tempat menyimpan kode program Anda di internet
+
+1. Buka **[github.com](https://github.com)** → klik **Sign up**
+2. Isi email, buat password, pilih username
+3. Verifikasi email → selesai ✅
 
 ---
 
-### 1C. Buat Akun Vercel
-> Vercel adalah hosting gratis untuk menjalankan website Anda di internet.
+### 🟩 1B. Supabase
+> Database gratis untuk menyimpan data produk, klik, dll
 
-1. Buka [vercel.com](https://vercel.com) → klik **Sign Up**
-2. Pilih **Continue with GitHub**
-3. Ikuti langkah yang muncul → akun Vercel siap ✅
-
----
-
-## BAGIAN 2 — Setup Project di Komputer
-
-### 2A. Install Software yang Dibutuhkan
-
-**Install Node.js:**
-1. Buka [nodejs.org](https://nodejs.org)
-2. Download versi **LTS** (tombol hijau kiri)
-3. Install seperti biasa → Next → Next → Finish
-
-**Install Git:**
-1. Buka [git-scm.com](https://git-scm.com)
-2. Download → install → semua pilihan biarkan default
+1. Buka **[supabase.com](https://supabase.com)** → klik **Start your project**
+2. Pilih **Continue with GitHub** → izinkan akses
+3. Klik **New Project**, isi:
+   - **Name:** `affiliate-rotator`
+   - **Database Password:** buat password kuat → **simpan di notepad!**
+   - **Region:** `Southeast Asia (Singapore)`
+4. Klik **Create new project** → tunggu ±2 menit ✅
 
 ---
 
-### 2B. Download Project Ini
+### ▲ 1C. Vercel
+> Hosting gratis agar website bisa diakses siapa saja via internet
 
-Buka **Command Prompt** (Windows: tekan `Win+R` → ketik `cmd` → Enter):
+1. Buka **[vercel.com](https://vercel.com)** → klik **Sign Up**
+2. Pilih **Continue with GitHub** → izinkan akses ✅
+
+---
+
+## BAGIAN 2 — Install Software di Komputer
+
+### 💚 Node.js (wajib)
+1. Buka **[nodejs.org](https://nodejs.org)**
+2. Download tombol hijau kiri berlabel **"LTS"**
+3. Install → Next → Next → Finish
+
+### 🔧 Git (wajib)
+1. Buka **[git-scm.com](https://git-scm.com/downloads)**
+2. Download → install → semua pilihan **biarkan default**
+
+> Setelah install, buka **Command Prompt** dan cek:
+> ```
+> node --version   → harus muncul angka, misal v20.11.0
+> git --version    → harus muncul angka, misal git version 2.43.0
+> ```
+
+---
+
+## BAGIAN 3 — Download & Setup Project
+
+Buka **Command Prompt** (Windows: `Win + R` → ketik `cmd` → Enter):
 
 ```bash
-# Masuk ke folder yang Anda inginkan, contoh:
+# 1. Masuk ke folder yang Anda inginkan
 cd C:\Users\NamaAnda\Documents
 
-# Clone / download project
+# 2. Clone / download project
 git clone https://github.com/noobiiefun/affiliate-rotator.git
 
-# Masuk ke folder project
+# 3. Masuk ke folder project
 cd affiliate-rotator
 
-# Install semua library yang dibutuhkan (tunggu beberapa menit)
+# 4. Install semua library (tunggu 2-5 menit)
 npm install
 ```
 
 ---
 
-### 2C. Setup File Konfigurasi
+## BAGIAN 4 — Ambil Credentials Supabase
 
-Di dalam folder project, buat file baru bernama `.env.local`.
+### 4A. Project URL
 
-Caranya:
-1. Buka folder `C:\Users\NamaAnda\Documents\affiliate-rotator`
-2. Klik kanan → New → Text Document
-3. Ganti nama file menjadi `.env.local` (termasuk titiknya, hapus `.txt`-nya)
-4. Buka dengan Notepad++, isi dengan:
+1. Buka **[supabase.com](https://supabase.com)** → masuk ke project Anda
+2. Sidebar kiri → klik ikon **⚙️ Settings**
+3. Klik **General** → scroll ke bawah
+4. Temukan **"Project URL"** → klik **Copy**
 
-```
-NEXT_PUBLIC_SUPABASE_URL=ISI_NANTI
-NEXT_PUBLIC_SUPABASE_ANON_KEY=ISI_NANTI
-SUPABASE_SERVICE_ROLE_KEY=ISI_NANTI
-NEXT_PUBLIC_BASE_URL=http://localhost:3000
-IP_HASH_SALT=tulis-sembarang-kata-rahasia-disini
-```
-
-Untuk mengisi `ISI_NANTI`, lihat **Bagian 3** di bawah.
+> Bentuknya: `https://abcdefghij.supabase.co`
 
 ---
 
-## BAGIAN 3 — Ambil Credentials Supabase
-
-### 3A. Ambil Project URL
-
-1. Buka [supabase.com](https://supabase.com) → masuk ke project Anda
-2. Di sidebar kiri, klik ikon **Settings** (gerigi ⚙️)
-3. Klik **General**
-4. Scroll ke bawah → cari **"Project URL"**
-5. Copy URL tersebut (bentuknya: `https://abcdefgh.supabase.co`)
-6. Paste ke `.env.local` menggantikan `ISI_NANTI` di baris `NEXT_PUBLIC_SUPABASE_URL`
-
-### 3B. Ambil API Keys
+### 4B. API Keys
 
 1. Masih di Settings → klik **API Keys**
 2. Klik tab **"Legacy anon, service_role API keys"**
-3. Copy nilai **anon** → paste ke `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-4. Klik **Reveal** di baris **service_role** → copy → paste ke `SUPABASE_SERVICE_ROLE_KEY`
+3. Salin 2 nilai berikut:
 
-> ⚠️ Jangan share `SUPABASE_SERVICE_ROLE_KEY` ke siapapun!
+| Yang dicari | Caranya |
+|-------------|---------|
+| **Anon Key** | Klik tombol copy di baris `anon` |
+| **Service Role Key** | Klik **Reveal** di baris `service_role` → lalu copy |
+
+> ⚠️ **Service Role Key** bersifat rahasia — jangan dibagikan ke siapapun!
 
 ---
 
-## BAGIAN 4 — Setup Database
+## BAGIAN 5 — Buat File Konfigurasi
 
-### 4A. Buat Tabel Database
+Di folder project (`C:\...\affiliate-rotator`), buat file bernama **`.env.local`**
 
-1. Di Supabase, klik **SQL Editor** di sidebar kiri
+**Cara buat di Windows:**
+1. Buka folder project di File Explorer
+2. Klik kanan area kosong → **New** → **Text Document**
+3. Ganti nama menjadi `.env.local` (hapus `.txt`, termasuk titiknya)
+4. Buka dengan **Notepad++** → isi dengan:
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://xxxxxxxxxx.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJhbGci...
+SUPABASE_SERVICE_ROLE_KEY=eyJhbGci...
+NEXT_PUBLIC_BASE_URL=http://localhost:3000
+IP_HASH_SALT=tulis-kata-rahasia-bebas-disini
+```
+
+Ganti setiap nilai dengan yang Anda salin dari Bagian 4. Simpan file.
+
+> 💡 `IP_HASH_SALT` boleh diisi kata apa saja, misal: `rahasia-saya-2024`
+
+---
+
+## BAGIAN 6 — Setup Database
+
+### 6A. Buat Tabel
+
+1. Di Supabase → klik **SQL Editor** di sidebar kiri
 2. Klik **New query**
 3. Buka file `supabase/schema.sql` di folder project dengan Notepad++
-4. **Ctrl+A** (select all) → **Ctrl+C** (copy)
-5. Kembali ke Supabase → klik di area editor → **Ctrl+V** (paste)
-6. Klik tombol **Run** (hijau, pojok kanan bawah)
-7. Jika muncul `Success` → database berhasil dibuat ✅
+4. **Ctrl+A** → **Ctrl+C** (copy semua)
+5. Kembali ke Supabase SQL Editor → klik area editor → **Ctrl+V** (paste)
+6. Klik tombol **Run** (kanan bawah)
+7. Muncul `Success` → berhasil ✅
 
-### 4B. Buat Akun Admin
+### 6B. Buat Akun Admin
 
-1. Di Supabase, klik **Authentication** di sidebar kiri
-2. Klik **Users** → klik **Add user** → **Create new user**
-3. Isi email dan password yang ingin Anda gunakan untuk login dashboard
+1. Di Supabase → klik **Authentication** di sidebar kiri
+2. Klik **Users** → **Add user** → **Create new user**
+3. Isi email & password yang ingin Anda pakai untuk login
 4. Klik **Create user** ✅
 
-### 4C. Matikan Pendaftaran Umum (Penting!)
+### 6C. Keamanan: Matikan Pendaftaran Umum
 
 1. Masih di **Authentication** → klik **Settings**
-2. Cari **"Enable email signup"** → matikan (toggle off)
-3. Klik **Save** → sekarang hanya Anda yang bisa login ✅
+2. Cari **"Enable email signup"** → **matikan** (toggle off)
+3. Klik **Save** ✅
+
+> Ini mencegah orang lain mendaftar sendiri ke dashboard Anda.
 
 ---
 
-## BAGIAN 5 — Jalankan di Komputer (Development)
+## BAGIAN 7 — Jalankan Aplikasi
 
-Di Command Prompt:
+Di Command Prompt (pastikan sudah di folder project):
 
 ```bash
 npm run dev
 ```
 
-Buka browser → ketik `http://localhost:3000` → tekan Enter.
+Terminal akan menampilkan:
 
-Jika muncul halaman login → **berhasil!** 🎉
-
-Login dengan email & password yang Anda buat di Supabase tadi.
-
----
-
-## BAGIAN 6 — Upload ke Internet (Deploy ke Vercel)
-
-> Setelah ini website Anda bisa diakses dari mana saja!
-
-### 6A. Upload Kode ke GitHub
-
-Di Command Prompt (di folder project):
-
-```bash
-# Inisialisasi git (jika belum)
-git init
-
-# Hubungkan ke GitHub (ganti USERNAME dengan username GitHub Anda)
-git remote add origin https://github.com/USERNAME/affiliate-rotator.git
-
-# Upload semua file
-git add .
-git commit -m "Upload pertama"
-git push -u origin main
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  🚀 Affiliate Rotator — Dev Server
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  💻 PC/Laptop  : http://localhost:3000
+  📱 HP/Tablet  : http://192.168.1.xx:3000
+  🎬 QR code akan pakai: http://192.168.1.xx:3000
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 ```
 
-> Jika diminta login GitHub, masukkan username dan password GitHub Anda.
+Buka browser → **http://localhost:3000** → muncul halaman login → **berhasil!** 🎉
+
+Login dengan email & password yang dibuat di Bagian 6B.
+
+> 📱 **HP di jaringan WiFi yang sama** bisa langsung akses lewat IP yang muncul di terminal — QR code juga otomatis pakai IP ini!
 
 ---
 
-### 6B. Deploy ke Vercel
+## BAGIAN 8 — Deploy ke Internet (Vercel)
 
-1. Buka [vercel.com](https://vercel.com) → sudah login
-2. Klik **"Add New Project"** (tombol di pojok kanan atas)
-3. Pilih repo **affiliate-rotator** dari daftar → klik **Import**
-4. Biarkan semua pengaturan default → klik **Deploy**
-5. Tunggu beberapa menit → Vercel akan memberi Anda URL seperti:
-   `https://affiliate-rotator-username.vercel.app`
+> Agar QR code bisa discan siapa saja (tidak hanya di WiFi yang sama), website harus online.
 
----
+### 8A. Upload ke GitHub
 
-### 6C. Isi Environment Variables di Vercel
+```bash
+git add .
+git commit -m "setup awal"
+git push
+```
 
-> Ini seperti mengisi `.env.local` tapi untuk versi online.
+> Jika diminta login, masukkan username & password GitHub.
 
-1. Di Vercel, masuk ke project Anda
-2. Klik **Settings** → **Environment Variables**
-3. Tambahkan satu per satu:
+### 8B. Deploy di Vercel
+
+1. Buka **[vercel.com](https://vercel.com)** → sudah login
+2. Klik **Add New Project**
+3. Pilih repo **affiliate-rotator** → klik **Import**
+4. Biarkan semua default → klik **Deploy**
+5. Tunggu ±2 menit → Vercel memberi URL seperti:
+   `https://affiliate-rotator-xxx.vercel.app`
+
+### 8C. Isi Environment Variables di Vercel
+
+1. Di Vercel → masuk project → **Settings** → **Environment Variables**
+2. Tambahkan satu per satu (klik **Add** setiap baris):
 
 | Name | Value |
 |------|-------|
-| `NEXT_PUBLIC_SUPABASE_URL` | URL dari Supabase (langkah 3A) |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key dari Supabase (langkah 3B) |
-| `SUPABASE_SERVICE_ROLE_KEY` | Service role key dari Supabase (langkah 3B) |
-| `NEXT_PUBLIC_BASE_URL` | URL Vercel Anda, misal `https://affiliate-rotator-xxx.vercel.app` |
-| `IP_HASH_SALT` | Kata rahasia bebas, sama seperti di `.env.local` |
+| `NEXT_PUBLIC_SUPABASE_URL` | URL Supabase Anda |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Anon key Supabase |
+| `SUPABASE_SERVICE_ROLE_KEY` | Service role key Supabase |
+| `NEXT_PUBLIC_BASE_URL` | `https://affiliate-rotator-xxx.vercel.app` |
+| `IP_HASH_SALT` | Kata rahasia Anda (sama dengan di .env.local) |
 
-4. Setelah semua diisi → klik **Deployments** → klik **Redeploy** ✅
+3. Setelah semua diisi → **Deployments** → klik **Redeploy** ✅
 
----
+### 8D. Coba Akses
 
-### 6D. Coba Akses Website
-
-Buka URL Vercel Anda di browser, misal:
-`https://affiliate-rotator-username.vercel.app/login`
-
-Login → masuk dashboard → website sudah online! 🎉
+Buka URL Vercel di browser HP atau PC — website sudah bisa diakses dari mana saja!
 
 ---
 
-## BAGIAN 7 — Cara Pakai di OBS
+## BAGIAN 9 — Cara Pakai Sehari-hari
 
-### 7A. Tambah Produk
+### 9A. Tambah Produk
 
-1. Login ke dashboard → klik **Produk** → **Tambah Produk**
-2. Isi nama produk, link affiliate, harga, gambar
-3. Klik **Tambah Produk** ✅
+1. Login dashboard → **Produk** → **Tambah Produk**
+2. Isi nama, pilih marketplace, paste link affiliate
+3. Upload beberapa URL gambar produk (klik **+ Tambah Gambar** untuk foto ke-2, dst)
+4. Paste URL video YouTube jika ada (opsional)
+5. Klik **Tambah Produk** ✅
 
-### 7B. Buat Rotator
+> 💡 **Cara dapat URL gambar:** Buka produk di Shopee/Tokopedia → klik kanan foto → "Salin alamat gambar"
 
-1. Klik **Rotator** → **Buat Rotator**
-2. Isi nama, slug URL (contoh: `live-hari-ini`), pilih interval (berapa detik ganti produk)
-3. Sesuaikan tema warna jika mau → klik **Buat Rotator**
-4. Tambahkan produk ke rotator → urutkan dengan drag & drop
+### 9B. Buat Rotator
 
-### 7C. Pasang di OBS
+1. **Rotator** → **Buat Rotator**
+2. Isi nama & slug URL (misal: `live-hari-ini` → URL jadi `/obs/live-hari-ini`)
+3. Atur interval (berapa detik tiap produk tampil)
+4. Tab **Tema**: atur warna, ukuran, posisi sesuai selera
+5. Klik **Buat Rotator** → tambahkan produk → atur urutan dengan drag & drop ✅
 
-1. Buka OBS → di **Sources**, klik tombol **+**
-2. Pilih **Browser**
-3. Di kolom URL, isi:
+### 9C. Pasang di OBS
+
+1. OBS → **Sources** → klik **+** → pilih **Browser**
+2. Isi URL:
    ```
-   https://affiliate-rotator-username.vercel.app/obs/nama-rotator-anda
+   https://domain-anda.vercel.app/obs/slug-rotator-anda
    ```
-4. Width: **300** | Height: **200**
-5. Centang **"Refresh browser when scene becomes active"**
-6. Klik **OK** ✅
+3. Width: `300` | Height: `220`
+4. Centang **"Refresh browser when scene becomes active"**
+5. Klik **OK** ✅
 
-Sekarang QR code produk akan muncul dan berputar otomatis saat Anda live! 🎬
+QR code berputar otomatis sesuai interval yang Anda set! 🎬
+
+---
+
+## BAGIAN 10 — Mengubah Port (Opsional)
+
+Port diatur dari `NEXT_PUBLIC_BASE_URL` di `.env.local`:
+
+```env
+# Pakai port 9780
+NEXT_PUBLIC_BASE_URL=http://localhost:9780
+```
+
+Cukup ubah angkanya → jalankan `npm run dev` → port otomatis ikut.
 
 ---
 
 ## ❓ Pertanyaan Umum
 
-**Q: Apakah benar-benar gratis?**
-> Ya! Supabase gratis hingga 500MB data & 50.000 baris. Vercel gratis untuk project personal. Cukup untuk ratusan produk dan ribuan klik.
+<details>
+<summary><b>Apakah benar-benar gratis?</b></summary>
 
-**Q: Apakah perlu beli domain?**
-> Tidak perlu. Vercel memberi domain gratis seperti `nama-project.vercel.app`. Tapi jika ingin domain sendiri (misal `toko-saya.com`), bisa dibeli di Niagahoster/Namecheap mulai Rp 15.000/tahun.
+Ya! Supabase gratis hingga 500MB & 50.000 baris. Vercel gratis untuk project personal.
+Cukup untuk ratusan produk dan ribuan klik per bulan.
+</details>
 
-**Q: Bagaimana cara update website setelah ada perubahan?**
-> Setiap kali Anda push ke GitHub, Vercel otomatis update sendiri!
-> ```bash
-> git add .
-> git commit -m "update produk"
-> git push
-> ```
+<details>
+<summary><b>Apakah perlu beli domain?</b></summary>
 
-**Q: Bisakah dipakai untuk jualan produk sendiri (bukan affiliate)?**
-> Bisa! Cukup isi **URL Affiliate** dengan link marketplace pribadi Anda.
+Tidak perlu. Vercel memberi domain gratis seperti `nama.vercel.app`.
+Tapi kalau ingin domain sendiri (misal `toko-saya.com`), bisa beli mulai Rp15.000/tahun di Niagahoster atau Namecheap, lalu sambungkan ke Vercel di Settings → Domains.
+</details>
 
-**Q: QR code mengarah ke mana?**
-> QR code mengarah ke halaman landing page di website Anda (misal `/p/nama-produk`), lalu dari sana penonton klik tombol **Beli** yang mengarah ke marketplace.
+<details>
+<summary><b>Bagaimana cara update setelah ada perubahan?</b></summary>
 
-**Q: Apakah aman?**
-> Ya. Dashboard dilindungi login. Website menggunakan HTTPS otomatis dari Vercel. Data tersimpan aman di Supabase.
+Setiap push ke GitHub, Vercel otomatis update sendiri:
+```bash
+git add .
+git commit -m "update"
+git push
+```
+</details>
+
+<details>
+<summary><b>Bisa untuk jualan produk sendiri (bukan affiliate)?</b></summary>
+
+Bisa! Isi **URL Affiliate** dengan link toko Anda di marketplace, atau link WhatsApp, atau apapun.
+</details>
+
+<details>
+<summary><b>QR code mengarah ke mana?</b></summary>
+
+QR → halaman landing page di website Anda (`/p/nama-produk`) → penonton klik tombol "Beli" → diarahkan ke marketplace.
+</details>
+
+<details>
+<summary><b>HP tidak bisa scan QR saat development lokal?</b></summary>
+
+Pastikan HP dan PC tersambung WiFi yang sama. URL di terminal saat `npm run dev` sudah otomatis pakai IP lokal — gunakan URL tersebut.
+</details>
+
+<details>
+<summary><b>Error "relation already exists" saat jalankan schema.sql?</b></summary>
+
+Tabel sudah ada. Jalankan `supabase/migration_v2.sql` atau `migration_v3.sql` saja (bukan schema.sql) untuk update database yang sudah ada datanya.
+</details>
 
 ---
 
-## 🛠️ Struktur File Project
+## 🛠️ Struktur Project
 
 ```
 affiliate-rotator/
 ├── app/
-│   ├── (auth)/login/         ← Halaman login
-│   ├── (dashboard)/          ← Semua halaman dashboard (butuh login)
-│   │   ├── dashboard/        ← Halaman utama & statistik ringkas
-│   │   ├── products/         ← Tambah, edit, hapus produk
-│   │   ├── rotator/          ← Kelola rotator & grup
-│   │   └── analytics/        ← Grafik klik & top produk
-│   └── (public)/             ← Halaman yang bisa diakses siapa saja
-│       ├── p/[slug]/         ← Landing page produk
-│       └── obs/[rotatorId]/  ← Overlay untuk OBS
-├── components/               ← Komponen UI yang dipakai ulang
-├── lib/                      ← Koneksi database & helper
-├── types/                    ← Definisi tipe data
+│   ├── (auth)/
+│   │   └── login/              ← Halaman login admin
+│   ├── (dashboard)/            ← Area dashboard (butuh login)
+│   │   ├── dashboard/          ← Halaman utama & statistik
+│   │   ├── products/           ← Tambah/edit/hapus produk
+│   │   ├── rotator/            ← Kelola rotator & grup
+│   │   └── analytics/          ← Grafik klik & top produk
+│   └── (public)/               ← Halaman publik (tanpa login)
+│       ├── p/[slug]/           ← Landing page produk
+│       └── obs/[rotatorId]/    ← Overlay untuk OBS
+├── components/
+│   └── dashboard/
+│       ├── ProductForm.tsx     ← Form produk (gambar banyak, video)
+│       └── RotatorForm.tsx     ← Form rotator + tema editor
+├── lib/
+│   ├── supabase.ts             ← Client database (publik)
+│   ├── supabase-server.ts      ← Client database (server)
+│   ├── supabase-auth.ts        ← Client auth (browser)
+│   ├── supabase-middleware.ts  ← Client auth (middleware)
+│   └── utils.ts                ← Fungsi helper
+├── types/index.ts              ← Definisi tipe data TypeScript
 ├── supabase/
-│   ├── schema.sql            ← Struktur database (jalankan sekali)
-│   ├── migration_v2.sql      ← Update database (jika sudah ada data lama)
-│   └── setup_admin.sql       ← Panduan buat admin
-├── middleware.ts              ← Proteksi halaman dashboard
-├── vercel.json               ← Konfigurasi Vercel
-├── DEPLOY.md                 ← Panduan deploy singkat
-└── dev.js                    ← Script jalankan server (baca port dari .env.local)
+│   ├── schema.sql              ← Struktur database (fresh install)
+│   ├── migration_v2.sql        ← Update: slug & tema rotator
+│   ├── migration_v3.sql        ← Update: multiple gambar & video
+│   └── setup_admin.sql         ← Panduan buat akun admin
+├── middleware.ts               ← Proteksi halaman dashboard
+├── dev.js                      ← Dev server (auto-detect IP lokal)
+├── vercel.json                 ← Config keamanan Vercel
+└── DEPLOY.md                   ← Panduan deploy singkat
 ```
+
+---
+
+## 🔐 Keamanan
+
+- ✅ HTTPS otomatis via Vercel
+- ✅ Dashboard dilindungi login (Supabase Auth)
+- ✅ Row Level Security di database
+- ✅ Security headers (XSS, clickjacking, dll)
+- ✅ OBS overlay boleh di-iframe, halaman lain tidak
+- ✅ File `.env.local` tidak ikut ke GitHub (ada di `.gitignore`)
 
 ---
 
 ## 📞 Butuh Bantuan?
 
-Jika ada error atau pertanyaan, buka **Issues** di GitHub repository ini.
+Buka **Issues** di halaman GitHub repository ini dan sertakan:
+1. Screenshot error yang muncul
+2. Langkah yang sedang dilakukan
+3. OS yang dipakai (Windows 10/11, Mac, Linux)
 
-Sertakan:
-1. Pesan error yang muncul (screenshot)
-2. Langkah yang sedang Anda lakukan
-3. OS yang Anda pakai (Windows/Mac/Linux)
+---
+
+<div align="center">
+  <p>Dibuat dengan ❤️ menggunakan Next.js + Supabase + Vercel</p>
+  <p><b>Semua gratis. Langsung pakai. Selamat streaming! 🎬</b></p>
+</div>
