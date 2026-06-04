@@ -1,4 +1,4 @@
-import { createServerSupabase } from '@/lib/supabase-auth'
+import { createServerSupabase } from '@/lib/supabase-server'
 import AnalyticsClient from './AnalyticsClient'
 
 export const revalidate = 0

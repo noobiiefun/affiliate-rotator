@@ -1,16 +1,12 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { createMiddlewareSupabase } from '@/lib/supabase-auth'
+import { createMiddlewareSupabase } from '@/lib/supabase-middleware'
 
-// Route yang wajib login
 const PROTECTED = ['/dashboard', '/products', '/rotator', '/analytics']
-// Route publik (tidak perlu login)
-const PUBLIC    = ['/login', '/p/', '/obs/']
 
 export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   const res = NextResponse.next()
 
-  // Cek apakah path ini protected
   const isProtected = PROTECTED.some(p => pathname.startsWith(p))
   if (!isProtected) return res
 
@@ -19,13 +15,11 @@ export async function middleware(req: NextRequest) {
     const { data: { session } } = await supabase.auth.getSession()
 
     if (!session) {
-      // Redirect ke login, simpan tujuan asal
       const loginUrl = new URL('/login', req.url)
       loginUrl.searchParams.set('next', pathname)
       return NextResponse.redirect(loginUrl)
     }
   } catch {
-    // Kalau error, redirect ke login
     return NextResponse.redirect(new URL('/login', req.url))
   }
 
@@ -33,7 +27,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: [
-    '/((?!_next/static|_next/image|favicon.ico|obs|p/).*)',
-  ],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico|obs|p/).*)'],
 }

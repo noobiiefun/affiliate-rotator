@@ -15,8 +15,8 @@ create table if not exists rotator_groups (
 );
 
 -- 2. Tambah kolom baru ke rotators
-alter table rotators add column if not exists slug text unique;
-alter table rotators add column if not exists group_id uuid references rotator_groups(id) on delete set null;
+alter table rotators add column if not exists slug        text;
+alter table rotators add column if not exists group_id    uuid references rotator_groups(id) on delete set null;
 alter table rotators add column if not exists theme_config jsonb default '{
   "bg_color": "#0f0f23",
   "accent_color": "#8b5cf6",
@@ -35,24 +35,42 @@ update rotators
 set slug = lower(regexp_replace(name, '[^a-zA-Z0-9]+', '-', 'g'))
 where slug is null;
 
--- 4. Pastikan slug tidak null (set not null setelah diisi)
+-- 4. Pastikan slug tidak null
 alter table rotators alter column slug set not null;
+alter table rotators add constraint rotators_slug_unique unique (slug);
 
 -- 5. Indexes baru
 create index if not exists idx_rotators_slug  on rotators(slug);
 create index if not exists idx_rotators_group on rotators(group_id);
 
--- 6. Trigger untuk groups
-create trigger if not exists trg_groups_updated_at
-  before update on rotator_groups for each row execute function update_updated_at();
+-- 6. Trigger untuk groups (tanpa IF NOT EXISTS karena tidak support semua versi PG)
+do $$
+begin
+  if not exists (
+    select 1 from pg_trigger where tgname = 'trg_groups_updated_at'
+  ) then
+    create trigger trg_groups_updated_at
+      before update on rotator_groups
+      for each row execute function update_updated_at();
+  end if;
+end;
+$$;
 
 -- 7. RLS untuk rotator_groups
 alter table rotator_groups enable row level security;
-create policy "Public read groups"
-  on rotator_groups for select using (true);
-create policy "Anon full access groups"
-  on rotator_groups for all to anon using (true) with check (true);
-create policy "Auth full access groups"
-  on rotator_groups for all using (auth.role() = 'authenticated');
 
-select 'Migration v2 selesai!' as status;
+do $$
+begin
+  if not exists (select 1 from pg_policies where policyname = 'Public read groups' and tablename = 'rotator_groups') then
+    create policy "Public read groups" on rotator_groups for select using (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Anon full access groups' and tablename = 'rotator_groups') then
+    create policy "Anon full access groups" on rotator_groups for all to anon using (true) with check (true);
+  end if;
+  if not exists (select 1 from pg_policies where policyname = 'Auth full access groups' and tablename = 'rotator_groups') then
+    create policy "Auth full access groups" on rotator_groups for all using (auth.role() = 'authenticated');
+  end if;
+end;
+$$;
+
+select 'Migration v2 selesai! ✅' as status;
