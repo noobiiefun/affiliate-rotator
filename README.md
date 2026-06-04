@@ -446,10 +446,10 @@ Buka **Issues** di halaman GitHub repository ini dan sertakan:
 
 ---
 ## Follow My Social Media
-intagram : instagram.com/ypnbfngm/
-tiktok : tiktok.com/@yp.nbfngm/
-youtube : youtube.com/@YP.NBFNGM
-facebook : facebook.com/yp.nbfngm
+- intagram : instagram.com/ypnbfngm/
+- tiktok : tiktok.com/@yp.nbfngm/
+- youtube : youtube.com/@YP.NBFNGM
+- facebook : facebook.com/yp.nbfngm
 
 
 
