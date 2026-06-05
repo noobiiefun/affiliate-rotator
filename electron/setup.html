@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Pengaturan — Affiliate Rotator</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background: #f8fafc; color: #1e293b;
+    height: 100vh; overflow-y: auto;
+  }
+
+  .header {
+    background: linear-gradient(135deg, #0f1117, #1a1a2e);
+    padding: 24px 28px 20px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .logo-box {
+    width: 44px; height: 44px;
+    background: linear-gradient(135deg,#16a34a,#15803d);
+    border-radius: 12px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px;
+    box-shadow: 0 4px 12px rgba(22,163,74,0.4);
+  }
+  .header h1 { font-size: 17px; font-weight: 700; color: #fff; }
+  .header p  { font-size: 12px; color: rgba(255,255,255,0.45); margin-top:2px; }
+
+  .body { padding: 20px 24px; }
+
+  .success-banner {
+    background: #f0fdf4; border: 1px solid #bbf7d0;
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 12px; color: #166534;
+    margin-bottom: 16px; display: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+
+  .info {
+    background: #eff6ff; border: 1px solid #bfdbfe;
+    border-radius: 10px; padding: 12px 14px;
+    font-size: 12px; color: #1d4ed8; margin-bottom: 16px;
+    line-height: 1.6;
+  }
+  .info a { color: #1d4ed8; font-weight: 600; text-decoration: underline; cursor: pointer; }
+
+  .section {
+    background: #fff; border: 1px solid #e2e8f0;
+    border-radius: 12px; padding: 16px; margin-bottom: 14px;
+  }
+  .section-title {
+    font-size: 11px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.05em;
+    margin-bottom: 12px;
+  }
+
+  .field { margin-bottom: 12px; }
+  .field:last-child { margin-bottom: 0; }
+  label {
+    display: block; font-size: 12px; font-weight: 600;
+    color: #374151; margin-bottom: 5px;
+  }
+  .hint { font-weight: 400; color: #94a3b8; font-size: 11px; }
+
+  .input-wrap { position: relative; }
+  input[type=text], input[type=url], input[type=number], input[type=password] {
+    width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px;
+    padding: 9px 12px; font-size: 13px; color: #111827;
+    background: #fff; outline: none; transition: border-color .15s;
+    font-family: 'Courier New', monospace;
+  }
+  input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px #dcfce7; }
+  input::placeholder { font-family: -apple-system, sans-serif; color: #94a3b8; }
+  .eye {
+    position: absolute; right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: none; border: none; cursor: pointer;
+    color: #94a3b8; font-size: 14px; padding: 0;
+  }
+
+  .btn-row { display: flex; gap: 8px; margin-top: 4px; }
+  .btn {
+    flex: 1; padding: 12px; border-radius: 10px; border: none;
+    font-size: 13px; font-weight: 600; cursor: pointer;
+    transition: all .15s;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, #16a34a, #15803d);
+    color: #fff; box-shadow: 0 2px 8px rgba(22,163,74,.3);
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(22,163,74,.4); }
+  .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
+  .btn-secondary {
+    background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0;
+  }
+  .btn-secondary:hover { background: #e2e8f0; }
+
+  .error {
+    background: #fef2f2; border: 1px solid #fecaca;
+    color: #dc2626; border-radius: 8px;
+    padding: 10px 12px; font-size: 12px;
+    margin-bottom: 12px; display: none;
+  }
+
+  .status-pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 20px;
+    margin-bottom: 12px;
+  }
+  .running { background: #f0fdf4; color: #16a34a; }
+  .stopped { background: #fef2f2; color: #dc2626; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="logo-box">📺</div>
+  <div>
+    <h1>Affiliate Rotator</h1>
+    <p>Pengaturan Aplikasi</p>
+  </div>
+</div>
+
+<div class="body">
+
+  <!-- Status server -->
+  <div id="statusPill" class="status-pill stopped">⭕ Server Berhenti</div>
+
+  <div class="error" id="errBox"></div>
+
+  <div class="info">
+    Butuh akun <strong>Supabase gratis</strong> untuk menyimpan data.<br>
+    Belum punya? <a onclick="open('https://supabase.com')">Daftar di supabase.com</a>
+    lalu ikuti README untuk setup database.
+  </div>
+
+  <!-- Supabase config -->
+  <div class="section">
+    <div class="section-title">⚙️ Konfigurasi Supabase</div>
+
+    <div class="field">
+      <label>Project URL <span class="hint">— Settings → General → Project URL</span></label>
+      <input type="url" id="supabaseUrl" placeholder="https://xxxxxxxxxx.supabase.co"/>
+    </div>
+    <div class="field">
+      <label>Anon Key <span class="hint">— API Keys → anon</span></label>
+      <div class="input-wrap">
+        <input type="password" id="supabaseAnonKey" placeholder="eyJhbGci..."/>
+        <button class="eye" onclick="tog('supabaseAnonKey',this)">👁</button>
+      </div>
+    </div>
+    <div class="field">
+      <label>Service Role Key <span class="hint">— API Keys → service_role (klik Reveal)</span></label>
+      <div class="input-wrap">
+        <input type="password" id="supabaseServiceKey" placeholder="eyJhbGci..."/>
+        <button class="eye" onclick="tog('supabaseServiceKey',this)">👁</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Port -->
+  <div class="section">
+    <div class="section-title">🌐 Port Server</div>
+    <div class="field">
+      <label>Port <span class="hint">— default 3000, ubah jika bentrok</span></label>
+      <input type="number" id="port" value="3000" min="1024" max="65535"/>
+    </div>
+  </div>
+
+  <!-- Tombol -->
+  <div class="error" id="errBox2"></div>
+  <div class="btn-row">
+    <button class="btn btn-primary" id="btnSave" onclick="save()">💾 Simpan & Mulai</button>
+    <button class="btn btn-secondary" onclick="window.electronAPI.startServer()">▶ Start</button>
+    <button class="btn btn-secondary" onclick="window.electronAPI.stopServer()">⏹ Stop</button>
+  </div>
+
+</div>
+
+<script>
+  function tog(id, btn) {
+    const el = document.getElementById(id)
+    el.type  = el.type === 'password' ? 'text' : 'password'
+    btn.textContent = el.type === 'password' ? '👁' : '🙈'
+  }
+
+  function err(msg) {
+    document.getElementById('errBox').textContent = msg
+    document.getElementById('errBox').style.display = msg ? 'block' : 'none'
+  }
+
+  async function refreshStatus() {
+    const s = await window.electronAPI.getStatus()
+    const pill = document.getElementById('statusPill')
+    pill.className = 'status-pill ' + (s.running ? 'running' : 'stopped')
+    pill.textContent = s.running ? `✅ Server Berjalan — port ${s.port}` : '⭕ Server Berhenti'
+    setTimeout(refreshStatus, 3000)
+  }
+
+  async function init() {
+    const cfg = await window.electronAPI.getConfig()
+    if (cfg) {
+      document.getElementById('supabaseUrl').value        = cfg.supabaseUrl || ''
+      document.getElementById('supabaseAnonKey').value    = cfg.supabaseAnonKey || ''
+      document.getElementById('supabaseServiceKey').value = cfg.supabaseServiceKey || ''
+      document.getElementById('port').value               = cfg.port || 3000
+    }
+    refreshStatus()
+  }
+
+  async function save() {
+    err('')
+    const url  = document.getElementById('supabaseUrl').value.trim()
+    const anon = document.getElementById('supabaseAnonKey').value.trim()
+    const svc  = document.getElementById('supabaseServiceKey').value.trim()
+    const port = parseInt(document.getElementById('port').value) || 3000
+
+    if (!url || !anon || !svc) { err('Semua field wajib diisi!'); return }
+    if (!url.startsWith('https://') || !url.includes('.supabase.co')) {
+      err('Project URL tidak valid. Format: https://xxxxxx.supabase.co')
+      return
+    }
+
+    const btn = document.getElementById('btnSave')
+    btn.disabled = true; btn.textContent = '⏳ Menyimpan...'
+
+    const r = await window.electronAPI.saveSetup({ supabaseUrl:url, supabaseAnonKey:anon, supabaseServiceKey:svc, port })
+    if (!r.ok) { err('Gagal: ' + r.error); btn.disabled=false; btn.textContent='💾 Simpan & Mulai'; return }
+
+    btn.textContent = '✅ Tersimpan!'
+    setTimeout(() => { btn.disabled=false; btn.textContent='💾 Simpan & Mulai' }, 2000)
+
+    window.electronAPI.startServer()
+  }
+
+  function open(url) { window.electronAPI.openExternal(url) }
+
+  init()
+</script>
+</body>
+</html>
