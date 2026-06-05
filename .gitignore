@@ -10,6 +10,10 @@ out/
 # Production
 build/
 
+# Electron build output
+release/
+dist-electron/
+
 # Env files (JANGAN commit file ini!)
 .env
 .env.local
