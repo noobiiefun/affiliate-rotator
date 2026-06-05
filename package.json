@@ -1,12 +1,78 @@
 {
   "name": "affiliate-rotator",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "QR Rotator untuk OBS Livestreaming Affiliate",
   "private": true,
+  "main": "electron/main.js",
   "scripts": {
-    "dev": "node dev.js",
-    "build": "next build",
-    "start": "next start",
-    "lint": "next lint"
+    "dev":          "node dev.js",
+    "build":        "next build",
+    "start":        "next start",
+    "lint":         "next lint",
+    "electron":     "electron .",
+    "electron:dev": "NODE_ENV=development electron .",
+    "dist":         "npm run build && electron-builder",
+    "dist:win":     "npm run build && electron-builder --win",
+    "dist:mac":     "npm run build && electron-builder --mac",
+    "dist:linux":   "npm run build && electron-builder --linux"
+  },
+  "build": {
+    "appId": "com.noobiiefun.affiliate-rotator",
+    "productName": "Affiliate Rotator",
+    "copyright": "Copyright © 2024 noobiiefun",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "electron/**/*",
+      ".next/**/*",
+      "public/**/*",
+      "node_modules/**/*",
+      "package.json",
+      "next.config.js",
+      ".env.example"
+    ],
+    "extraResources": [
+      { "from": "electron/assets", "to": "assets" }
+    ],
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "icon": "electron/assets/icon.ico",
+      "requestedExecutionLevel": "asInvoker"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "installerIcon": "electron/assets/icon.ico",
+      "uninstallerIcon": "electron/assets/icon.ico",
+      "installerHeaderIcon": "electron/assets/icon.ico",
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "Affiliate Rotator",
+      "license": "LICENSE",
+      "installerLanguages": ["en_US"],
+      "language": "1033",
+      "artifactName": "AffiliateRotator-Setup-${version}.exe"
+    },
+    "mac": {
+      "target": [
+        { "target": "dmg", "arch": ["x64", "arm64"] }
+      ],
+      "icon": "electron/assets/icon.icns",
+      "category": "public.app-category.business",
+      "artifactName": "AffiliateRotator-${version}.dmg"
+    },
+    "linux": {
+      "target": [
+        { "target": "AppImage", "arch": ["x64"] },
+        { "target": "deb",      "arch": ["x64"] }
+      ],
+      "icon": "electron/assets/icon.png",
+      "category": "Office",
+      "artifactName": "AffiliateRotator-${version}.AppImage"
+    }
   },
   "dependencies": {
     "next": "14.2.3",
@@ -33,6 +99,8 @@
     "postcss": "^8",
     "autoprefixer": "^10.0.1",
     "eslint": "^8",
-    "eslint-config-next": "14.2.3"
+    "eslint-config-next": "14.2.3",
+    "electron": "^30.0.0",
+    "electron-builder": "^24.13.3"
   }
 }
