@@ -14,7 +14,9 @@
     "dist": "npm run build && electron-builder",
     "dist:win": "npm run build && electron-builder --win",
     "dist:mac": "npm run build && electron-builder --mac",
-    "dist:linux": "npm run build && electron-builder --linux"
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:portable": "npm run build && electron-builder --win portable",
+    "dist:win:all": "npm run build && electron-builder --win --x64 --ia32"
   },
   "build": {
     "appId": "com.noobiiefun.affiliate-rotator",
@@ -43,6 +45,13 @@
         {
           "target": "nsis",
           "arch": [
+            "x64",
+            "ia32"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
             "x64"
           ]
         }
@@ -64,7 +73,8 @@
         "en_US"
       ],
       "language": "1033",
-      "artifactName": "AffiliateRotator-Setup-${version}.exe"
+      "artifactName": "AffiliateRotator-Setup-${version}-${arch}.exe",
+      "deleteAppDataOnUninstall": true
     },
     "mac": {
       "target": [
@@ -98,6 +108,9 @@
       "icon": "electron/assets/icon.png",
       "category": "Office",
       "artifactName": "AffiliateRotator-${version}.AppImage"
+    },
+    "portable": {
+      "artifactName": "AffiliateRotator-Portable-${version}.exe"
     }
   },
   "dependencies": {
