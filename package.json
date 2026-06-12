@@ -1,6 +1,6 @@
 {
   "name": "affiliate-rotator",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "QR Rotator untuk OBS Livestreaming Affiliate",
   "private": true,
   "main": "electron/main.js",

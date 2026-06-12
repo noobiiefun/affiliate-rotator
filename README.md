@@ -6,6 +6,7 @@
 
 Penonton scan QR → landing page produk → klik beli → komisi masuk 💰
 
+[![Version](https://img.shields.io/badge/versi-1.0.1-blue)](https://github.com/noobiiefun/affiliate-rotator/releases)
 [![Next.js](https://img.shields.io/badge/Next.js-14-black?logo=next.js)](https://nextjs.org)
 [![Supabase](https://img.shields.io/badge/Supabase-gratis-green?logo=supabase)](https://supabase.com)
 [![Vercel](https://img.shields.io/badge/Vercel-gratis-black?logo=vercel)](https://vercel.com)
@@ -445,13 +446,6 @@ Buka **Issues** di halaman GitHub repository ini dan sertakan:
 3. OS yang dipakai (Windows 10/11, Mac, Linux)
 
 ---
-## Follow My Social Media
-- intagram : https://www.instagram.com/ypnbfngm/
-- tiktok : https://www.tiktok.com/@yp.nbfngm/
-- youtube : https://www.youtube.com/@YP.NBFNGM
-- facebook : https://www.facebook.com/yp.nbfngm
-
-
 
 <div align="center">
   <p>Dibuat dengan ❤️ menggunakan Next.js + Supabase + Vercel</p>
