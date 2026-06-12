@@ -32,7 +32,9 @@
       "node_modules/**/*",
       "package.json",
       "next.config.js",
-      ".env.example"
+      "supabase/schema.sql",
+      "supabase/migration_v2.sql",
+      "supabase/migration_v3.sql"
     ],
     "extraResources": [
       {

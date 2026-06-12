@@ -2,7 +2,6 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width,initial-scale=1"/>
 <title>Pengaturan — Affiliate Rotator</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; }
@@ -11,107 +10,99 @@
     background: #f8fafc; color: #1e293b;
     height: 100vh; overflow-y: auto;
   }
-
   .header {
     background: linear-gradient(135deg, #0f1117, #1a1a2e);
-    padding: 24px 28px 20px;
+    padding: 20px 24px;
     display: flex; align-items: center; gap: 14px;
   }
   .logo-box {
-    width: 44px; height: 44px;
+    width: 40px; height: 40px;
     background: linear-gradient(135deg,#16a34a,#15803d);
-    border-radius: 12px;
+    border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
-    font-size: 22px;
-    box-shadow: 0 4px 12px rgba(22,163,74,0.4);
+    font-size: 20px;
   }
-  .header h1 { font-size: 17px; font-weight: 700; color: #fff; }
-  .header p  { font-size: 12px; color: rgba(255,255,255,0.45); margin-top:2px; }
+  .header h1 { font-size: 16px; font-weight: 700; color: #fff; }
+  .header p  { font-size: 11px; color: rgba(255,255,255,0.4); margin-top:2px; }
+  .body { padding: 16px 20px 80px; }
 
-  .body { padding: 20px 24px; }
-
-  .success-banner {
-    background: #f0fdf4; border: 1px solid #bbf7d0;
-    border-radius: 10px; padding: 12px 14px;
-    font-size: 12px; color: #166534;
-    margin-bottom: 16px; display: none;
-    display: flex; align-items: center; gap: 8px;
+  .pill {
+    display: inline-flex; align-items: center; gap: 5px;
+    font-size: 11px; font-weight: 600;
+    padding: 4px 10px; border-radius: 20px; margin-bottom: 12px;
   }
+  .running { background: #f0fdf4; color: #16a34a; }
+  .stopped { background: #fef2f2; color: #dc2626; }
 
-  .info {
-    background: #eff6ff; border: 1px solid #bfdbfe;
-    border-radius: 10px; padding: 12px 14px;
-    font-size: 12px; color: #1d4ed8; margin-bottom: 16px;
-    line-height: 1.6;
+  .alert {
+    border-radius: 10px; padding: 10px 12px;
+    font-size: 12px; margin-bottom: 12px; line-height: 1.5;
+    display: none;
   }
-  .info a { color: #1d4ed8; font-weight: 600; text-decoration: underline; cursor: pointer; }
+  .alert-error   { background: #fef2f2; border: 1px solid #fecaca; color: #dc2626; }
+  .alert-success { background: #f0fdf4; border: 1px solid #bbf7d0; color: #166534; }
+  .alert-info    { background: #eff6ff; border: 1px solid #bfdbfe; color: #1d4ed8; }
+  .alert-warn    { background: #fffbeb; border: 1px solid #fde68a; color: #92400e; }
+  .alert a       { font-weight: 600; text-decoration: underline; cursor: pointer; }
 
   .section {
     background: #fff; border: 1px solid #e2e8f0;
-    border-radius: 12px; padding: 16px; margin-bottom: 14px;
+    border-radius: 12px; padding: 14px; margin-bottom: 12px;
   }
   .section-title {
-    font-size: 11px; font-weight: 700; color: #64748b;
-    text-transform: uppercase; letter-spacing: 0.05em;
-    margin-bottom: 12px;
+    font-size: 10px; font-weight: 700; color: #64748b;
+    text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px;
   }
-
-  .field { margin-bottom: 12px; }
+  .field { margin-bottom: 10px; }
   .field:last-child { margin-bottom: 0; }
-  label {
-    display: block; font-size: 12px; font-weight: 600;
-    color: #374151; margin-bottom: 5px;
-  }
+  label { display: block; font-size: 12px; font-weight: 600; color: #374151; margin-bottom: 4px; }
   .hint { font-weight: 400; color: #94a3b8; font-size: 11px; }
 
   .input-wrap { position: relative; }
   input[type=text], input[type=url], input[type=number], input[type=password] {
     width: 100%; border: 1.5px solid #e2e8f0; border-radius: 8px;
-    padding: 9px 12px; font-size: 13px; color: #111827;
+    padding: 8px 10px; font-size: 12px; color: #111827;
     background: #fff; outline: none; transition: border-color .15s;
     font-family: 'Courier New', monospace;
   }
   input:focus { border-color: #16a34a; box-shadow: 0 0 0 3px #dcfce7; }
-  input::placeholder { font-family: -apple-system, sans-serif; color: #94a3b8; }
+  input::placeholder { font-family: system-ui, sans-serif; color: #94a3b8; font-size: 12px; }
   .eye {
-    position: absolute; right: 10px; top: 50%;
+    position: absolute; right: 8px; top: 50%;
     transform: translateY(-50%);
     background: none; border: none; cursor: pointer;
-    color: #94a3b8; font-size: 14px; padding: 0;
+    color: #94a3b8; font-size: 13px; padding: 0;
   }
 
-  .btn-row { display: flex; gap: 8px; margin-top: 4px; }
+  .btn-row { display: flex; gap: 6px; margin-bottom: 8px; }
   .btn {
-    flex: 1; padding: 12px; border-radius: 10px; border: none;
-    font-size: 13px; font-weight: 600; cursor: pointer;
-    transition: all .15s;
+    flex: 1; padding: 10px; border-radius: 8px; border: none;
+    font-size: 12px; font-weight: 600; cursor: pointer; transition: all .15s;
   }
   .btn-primary {
     background: linear-gradient(135deg, #16a34a, #15803d);
-    color: #fff; box-shadow: 0 2px 8px rgba(22,163,74,.3);
+    color: #fff; box-shadow: 0 2px 6px rgba(22,163,74,.3);
   }
-  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(22,163,74,.4); }
+  .btn-primary:hover { transform: translateY(-1px); }
   .btn-primary:disabled { opacity: .6; cursor: not-allowed; transform: none; }
-  .btn-secondary {
-    background: #f1f5f9; color: #64748b; border: 1px solid #e2e8f0;
-  }
+  .btn-secondary { background: #f1f5f9; color: #475569; border: 1px solid #e2e8f0; }
   .btn-secondary:hover { background: #e2e8f0; }
+  .btn-danger { background: #fef2f2; color: #dc2626; border: 1px solid #fecaca; }
+  .btn-danger:hover { background: #fee2e2; }
 
-  .error {
-    background: #fef2f2; border: 1px solid #fecaca;
-    color: #dc2626; border-radius: 8px;
-    padding: 10px 12px; font-size: 12px;
-    margin-bottom: 12px; display: none;
+  .info-path {
+    background: #f8fafc; border: 1px solid #e2e8f0;
+    border-radius: 8px; padding: 8px 10px; margin-bottom: 10px;
+    font-size: 11px; color: #64748b;
   }
+  .info-path code { font-family: 'Courier New', monospace; color: #374151; }
 
-  .status-pill {
-    display: inline-flex; align-items: center; gap: 5px;
-    font-size: 11px; font-weight: 600;
-    padding: 4px 10px; border-radius: 20px;
-    margin-bottom: 12px;
+  .step-badge {
+    display: inline-flex; align-items: center; gap: 4px;
+    background: #f0fdf4; border: 1px solid #bbf7d0;
+    color: #16a34a; font-size: 10px; font-weight: 700;
+    padding: 2px 8px; border-radius: 20px; margin-bottom: 8px;
   }
-  .running { background: #f0fdf4; color: #16a34a; }
-  .stopped { background: #fef2f2; color: #dc2626; }
 </style>
 </head>
 <body>
@@ -126,18 +117,24 @@
 
 <div class="body">
 
-  <!-- Status server -->
-  <div id="statusPill" class="status-pill stopped">⭕ Server Berhenti</div>
+  <div id="statusPill" class="pill stopped">⭕ Server Berhenti</div>
 
-  <div class="error" id="errBox"></div>
-
-  <div class="info">
-    Butuh akun <strong>Supabase gratis</strong> untuk menyimpan data.<br>
-    Belum punya? <a onclick="open('https://supabase.com')">Daftar di supabase.com</a>
-    lalu ikuti README untuk setup database.
+  <!-- Alerts -->
+  <div class="alert alert-error"   id="errBox"></div>
+  <div class="alert alert-success" id="successBox"></div>
+  <div class="alert alert-warn"    id="warnBox">
+    ⚠️ <strong>Pertama kali setup?</strong> Pastikan sudah menjalankan
+    <code>supabase/schema.sql</code> di Supabase SQL Editor sebelum mulai.
+    <a onclick="openLink('https://supabase.com/dashboard')">Buka Supabase →</a>
   </div>
 
-  <!-- Supabase config -->
+  <!-- Info -->
+  <div class="alert alert-info" id="infoBox" style="display:block">
+    Butuh akun <strong>Supabase gratis</strong> →
+    <a onclick="openLink('https://supabase.com')">supabase.com</a>
+  </div>
+
+  <!-- Konfigurasi Supabase -->
   <div class="section">
     <div class="section-title">⚙️ Konfigurasi Supabase</div>
 
@@ -153,7 +150,7 @@
       </div>
     </div>
     <div class="field">
-      <label>Service Role Key <span class="hint">— API Keys → service_role (klik Reveal)</span></label>
+      <label>Service Role Key <span class="hint">— API Keys → service_role → Reveal</span></label>
       <div class="input-wrap">
         <input type="password" id="supabaseServiceKey" placeholder="eyJhbGci..."/>
         <button class="eye" onclick="tog('supabaseServiceKey',this)">👁</button>
@@ -170,12 +167,20 @@
     </div>
   </div>
 
-  <!-- Tombol -->
-  <div class="error" id="errBox2"></div>
+  <!-- Info path -->
+  <div class="info-path" id="pathInfo" style="display:none">
+    📁 Data tersimpan di: <code id="pathText">...</code>
+  </div>
+
+  <!-- Tombol aksi -->
   <div class="btn-row">
     <button class="btn btn-primary" id="btnSave" onclick="save()">💾 Simpan & Mulai</button>
-    <button class="btn btn-secondary" onclick="window.electronAPI.startServer()">▶ Start</button>
-    <button class="btn btn-secondary" onclick="window.electronAPI.stopServer()">⏹ Stop</button>
+    <button class="btn btn-secondary" id="btnTest" onclick="testConn()">🔌 Test Koneksi</button>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-secondary" onclick="window.electronAPI.startServer()">▶ Start Server</button>
+    <button class="btn btn-secondary" onclick="window.electronAPI.stopServer()">⏹ Stop Server</button>
+    <button class="btn btn-danger"    onclick="resetCfg()">🗑 Reset</button>
   </div>
 
 </div>
@@ -187,15 +192,23 @@
     btn.textContent = el.type === 'password' ? '👁' : '🙈'
   }
 
-  function err(msg) {
-    document.getElementById('errBox').textContent = msg
-    document.getElementById('errBox').style.display = msg ? 'block' : 'none'
+  function openLink(url) { window.electronAPI.openExternal(url) }
+
+  function showAlert(id, msg) {
+    ['errBox','successBox'].forEach(i => {
+      const el = document.getElementById(i)
+      el.style.display = 'none'; el.textContent = ''
+    })
+    if (msg) {
+      const el = document.getElementById(id)
+      el.textContent = msg; el.style.display = 'block'
+    }
   }
 
   async function refreshStatus() {
-    const s = await window.electronAPI.getStatus()
+    const s    = await window.electronAPI.getStatus()
     const pill = document.getElementById('statusPill')
-    pill.className = 'status-pill ' + (s.running ? 'running' : 'stopped')
+    pill.className = 'pill ' + (s.running ? 'running' : 'stopped')
     pill.textContent = s.running ? `✅ Server Berjalan — port ${s.port}` : '⭕ Server Berhenti'
     setTimeout(refreshStatus, 3000)
   }
@@ -207,36 +220,84 @@
       document.getElementById('supabaseAnonKey').value    = cfg.supabaseAnonKey || ''
       document.getElementById('supabaseServiceKey').value = cfg.supabaseServiceKey || ''
       document.getElementById('port').value               = cfg.port || 3000
+      document.getElementById('warnBox').style.display    = 'none'
+    } else {
+      document.getElementById('warnBox').style.display = 'block'
     }
+
+    // Tampilkan path info
+    try {
+      const paths = await window.electronAPI.getPaths()
+      if (paths) {
+        document.getElementById('pathInfo').style.display = 'block'
+        document.getElementById('pathText').textContent   = paths.userData
+      }
+    } catch {}
+
     refreshStatus()
   }
 
+  async function testConn() {
+    const url  = document.getElementById('supabaseUrl').value.trim()
+    const anon = document.getElementById('supabaseAnonKey').value.trim()
+    const svc  = document.getElementById('supabaseServiceKey').value.trim()
+
+    if (!url || !anon) { showAlert('errBox', 'Isi URL dan Anon Key terlebih dahulu'); return }
+
+    const btn = document.getElementById('btnTest')
+    btn.textContent = '⏳ Testing...'
+    btn.disabled = true
+
+    const r = await window.electronAPI.testConnection({ supabaseUrl: url, supabaseAnonKey: anon, supabaseServiceKey: svc })
+    btn.textContent = '🔌 Test Koneksi'
+    btn.disabled = false
+
+    if (r && r.ok) {
+      showAlert('successBox', '✅ Koneksi Supabase berhasil!')
+    } else {
+      showAlert('errBox', '❌ Koneksi gagal: ' + (r?.error || 'Cek URL dan API key Anda'))
+    }
+  }
+
   async function save() {
-    err('')
+    showAlert('errBox', '')
     const url  = document.getElementById('supabaseUrl').value.trim()
     const anon = document.getElementById('supabaseAnonKey').value.trim()
     const svc  = document.getElementById('supabaseServiceKey').value.trim()
     const port = parseInt(document.getElementById('port').value) || 3000
 
-    if (!url || !anon || !svc) { err('Semua field wajib diisi!'); return }
+    if (!url || !anon || !svc) { showAlert('errBox', 'Semua field wajib diisi!'); return }
     if (!url.startsWith('https://') || !url.includes('.supabase.co')) {
-      err('Project URL tidak valid. Format: https://xxxxxx.supabase.co')
+      showAlert('errBox', 'Project URL tidak valid. Format: https://xxxxxx.supabase.co')
       return
     }
 
     const btn = document.getElementById('btnSave')
     btn.disabled = true; btn.textContent = '⏳ Menyimpan...'
 
-    const r = await window.electronAPI.saveSetup({ supabaseUrl:url, supabaseAnonKey:anon, supabaseServiceKey:svc, port })
-    if (!r.ok) { err('Gagal: ' + r.error); btn.disabled=false; btn.textContent='💾 Simpan & Mulai'; return }
+    const r = await window.electronAPI.saveSetup({ supabaseUrl: url, supabaseAnonKey: anon, supabaseServiceKey: svc, port })
+    if (!r.ok) {
+      showAlert('errBox', 'Gagal menyimpan: ' + r.error)
+      btn.disabled = false; btn.textContent = '💾 Simpan & Mulai'
+      return
+    }
 
     btn.textContent = '✅ Tersimpan!'
-    setTimeout(() => { btn.disabled=false; btn.textContent='💾 Simpan & Mulai' }, 2000)
+    showAlert('successBox', '✅ Konfigurasi tersimpan! Server akan dimulai...')
+    setTimeout(() => { btn.disabled = false; btn.textContent = '💾 Simpan & Mulai' }, 2000)
 
     window.electronAPI.startServer()
   }
 
-  function open(url) { window.electronAPI.openExternal(url) }
+  async function resetCfg() {
+    if (!confirm('Reset semua konfigurasi? Anda perlu isi ulang credentials Supabase.')) return
+    await window.electronAPI.resetConfig()
+    document.getElementById('supabaseUrl').value = ''
+    document.getElementById('supabaseAnonKey').value = ''
+    document.getElementById('supabaseServiceKey').value = ''
+    showAlert('successBox', 'Konfigurasi direset. Silakan isi ulang.')
+    document.getElementById('warnBox').style.display = 'block'
+  }
 
   init()
 </script>
