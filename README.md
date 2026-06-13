@@ -11,6 +11,14 @@ Penonton scan QR → landing page produk → klik beli → komisi masuk 💰
 [![Supabase](https://img.shields.io/badge/Supabase-gratis-green?logo=supabase)](https://supabase.com)
 [![Vercel](https://img.shields.io/badge/Vercel-gratis-black?logo=vercel)](https://vercel.com)
 
+<br/>
+
+### 🚀 Deploy Instan ke Vercel (Gratis)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/noobiiefun/affiliate-rotator&env=NEXT_PUBLIC_SUPABASE_URL,NEXT_PUBLIC_SUPABASE_ANON_KEY,SUPABASE_SERVICE_ROLE_KEY,NEXT_PUBLIC_BASE_URL,IP_HASH_SALT&envDescription=Credentials%20Supabase%20dan%20konfigurasi%20aplikasi&project-name=affiliate-rotator&repository-name=affiliate-rotator)
+
+> Klik tombol di atas → login GitHub → isi 5 variabel → Deploy otomatis! ✅
+
 </div>
 
 ---
