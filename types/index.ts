@@ -42,6 +42,10 @@ export interface Product {
   image_url:     string | null   // gambar utama (legacy, tetap dipakai di OBS)
   images:        string[]        // array semua gambar (untuk landing page)
   video_url:     string | null   // URL video YouTube/TikTok (opsional)
+  coupon_code:   string | null   // kode kupon yang bisa dicopy penonton
+  coupon_label:  string | null   // label kupon, misal 'DISKON20'
+  sale_ends_at:  string | null   // waktu berakhir flash sale (ISO string)
+  sale_label:    string | null   // label sale, misal 'Flash Sale!'
   affiliate_url: string
   marketplace:   Marketplace
   slug:          string
@@ -144,4 +148,23 @@ export const OVERLAY_POSITION_LABELS: Record<OverlayPosition, string> = {
   'top-left':     'Pojok Kiri Atas',
   'top-right':    'Pojok Kanan Atas',
   'center':       'Tengah',
+}
+
+// ── Spotlight & Flash Sale types ──────────────────────────
+
+export interface SpotlightEvent {
+  id:         string
+  rotator_id: string
+  product_id: string
+  started_at: string
+  ends_at:    string
+  is_active:  boolean
+  product?:   Product
+}
+
+// Extended RotatorItem dengan spotlight
+export interface RotatorItemExtended extends RotatorItem {
+  spotlight_duration: number | null  // detik, null = pakai interval rotator
+  spotlight_active:   boolean
+  product: Product
 }

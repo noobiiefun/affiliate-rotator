@@ -5,6 +5,7 @@ import { ShoppingBag, Share2, Check, ChevronLeft, Shield, Truck, Tag, ChevronRig
 import { Product, MARKETPLACE_INFO, getProductImages, getVideoEmbedUrl } from '@/types'
 import { formatRupiah } from '@/lib/utils'
 import { supabase } from '@/lib/supabase'
+import CouponBanner from '@/components/product/CouponBanner'
 
 interface Props { product: Product }
 
@@ -14,15 +15,15 @@ const MP_BUTTON_COLOR: Record<string, string> = {
 }
 
 export default function LandingPageClient({ product }: Props) {
-  const allImages  = getProductImages(product)
-  const embedUrl   = getVideoEmbedUrl(product.video_url || null)
-  const mp         = MARKETPLACE_INFO[product.marketplace]
-  const btnColor   = MP_BUTTON_COLOR[product.marketplace] || '#2563eb'
+  const allImages = getProductImages(product)
+  const embedUrl  = getVideoEmbedUrl(product.video_url || null)
+  const mp        = MARKETPLACE_INFO[product.marketplace]
+  const btnColor  = MP_BUTTON_COLOR[product.marketplace] || '#2563eb'
 
-  const [imgIdx,   setImgIdx]   = useState(0)
-  const [shared,   setShared]   = useState(false)
-  const [clicked,  setClicked]  = useState(false)
-  const [showVideo,setShowVideo]= useState(false)
+  const [imgIdx,    setImgIdx]    = useState(0)
+  const [shared,    setShared]    = useState(false)
+  const [clicked,   setClicked]   = useState(false)
+  const [showVideo, setShowVideo] = useState(false)
 
   async function handleBuy() {
     setClicked(true)
@@ -41,61 +42,60 @@ export default function LandingPageClient({ product }: Props) {
     }
   }
 
-  const S: Record<string, React.CSSProperties> = {
-    root:    { minHeight: '100vh', background: '#f5f5f5', fontFamily: 'system-ui,-apple-system,sans-serif', paddingBottom: 100 },
-    topbar:  { position: 'sticky', top: 0, zIndex: 50, background: '#fff', borderBottom: '1px solid #e5e7eb', padding: '12px 16px', display: 'flex', alignItems: 'center', gap: 12 },
-    btn:     { padding: 6, borderRadius: 8, border: 'none', background: '#f3f4f6', cursor: 'pointer', display: 'flex' },
-    wrap:    { maxWidth: 600, margin: '0 auto' },
-  }
-
   return (
-    <div style={S.root}>
+    <div style={{ minHeight:'100vh', background:'#f5f5f5', fontFamily:'system-ui,-apple-system,sans-serif', paddingBottom:100 }}>
+
       {/* Top bar */}
-      <div style={S.topbar}>
-        <button onClick={() => window.history.back()} style={S.btn}>
+      <div style={{ position:'sticky', top:0, zIndex:50, background:'#fff', borderBottom:'1px solid #e5e7eb', padding:'12px 16px', display:'flex', alignItems:'center', gap:12 }}>
+        <button onClick={() => window.history.back()} style={{ padding:6, borderRadius:8, border:'none', background:'#f3f4f6', cursor:'pointer', display:'flex' }}>
           <ChevronLeft size={18} color="#374151" />
         </button>
         <p style={{ flex:1, fontSize:14, fontWeight:600, color:'#111827', overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap' }}>
           {product.name}
         </p>
-        <button onClick={handleShare} style={S.btn}>
+        <button onClick={handleShare} style={{ padding:6, borderRadius:8, border:'none', background:'#f3f4f6', cursor:'pointer', display:'flex' }}>
           {shared ? <Check size={18} color="#16a34a" /> : <Share2 size={18} color="#374151" />}
         </button>
       </div>
 
-      <div style={S.wrap}>
+      <div style={{ maxWidth:600, margin:'0 auto' }}>
 
-        {/* ── GALERI GAMBAR ── */}
+        {/* Flash Sale Banner — ditampilkan di paling atas jika ada */}
+        {product.sale_ends_at && (
+          <div style={{ background:'linear-gradient(135deg,#dc2626,#b91c1c)', padding:'0' }}>
+            <CouponBanner
+              couponCode={null}
+              couponLabel={null}
+              saleEndsAt={product.sale_ends_at}
+              saleLabel={product.sale_label}
+            />
+          </div>
+        )}
+
+        {/* Galeri gambar */}
         {allImages.length > 0 && (
-          <div style={{ background: '#fff', position: 'relative' }}>
-            {/* Gambar utama */}
-            <div style={{ aspectRatio: '1/1', overflow: 'hidden', position: 'relative', background: '#f9fafb' }}>
-              <img
-                src={allImages[imgIdx]}
-                alt={product.name}
-                style={{ width: '100%', height: '100%', objectFit: 'contain', padding: 12 }}
-                onError={e => { (e.target as HTMLImageElement).src = '' }}
-              />
+          <div style={{ background:'#fff', position:'relative' }}>
+            <div style={{ aspectRatio:'1/1', overflow:'hidden', position:'relative', background:'#f9fafb' }}>
+              <img src={allImages[imgIdx]} alt={product.name}
+                style={{ width:'100%', height:'100%', objectFit:'contain', padding:12 }}
+                onError={e => { (e.target as HTMLImageElement).style.display='none' }} />
 
-              {/* Tombol prev/next jika ada lebih dari 1 gambar */}
               {allImages.length > 1 && (
                 <>
-                  <button onClick={() => setImgIdx(i => (i - 1 + allImages.length) % allImages.length)}
+                  <button onClick={() => setImgIdx(i => (i-1+allImages.length)%allImages.length)}
                     style={{ position:'absolute', left:8, top:'50%', transform:'translateY(-50%)', background:'rgba(0,0,0,0.4)', border:'none', borderRadius:'50%', width:32, height:32, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
                     <ChevronLeft size={18} color="#fff" />
                   </button>
-                  <button onClick={() => setImgIdx(i => (i + 1) % allImages.length)}
+                  <button onClick={() => setImgIdx(i => (i+1)%allImages.length)}
                     style={{ position:'absolute', right:8, top:'50%', transform:'translateY(-50%)', background:'rgba(0,0,0,0.4)', border:'none', borderRadius:'50%', width:32, height:32, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center' }}>
                     <ChevronRight size={18} color="#fff" />
                   </button>
-                  {/* Counter */}
                   <div style={{ position:'absolute', bottom:12, right:12, background:'rgba(0,0,0,0.5)', borderRadius:20, padding:'2px 10px', color:'#fff', fontSize:12 }}>
-                    {imgIdx + 1}/{allImages.length}
+                    {imgIdx+1}/{allImages.length}
                   </div>
                 </>
               )}
 
-              {/* Marketplace badge */}
               <div style={{ position:'absolute', top:12, right:12, background:'rgba(0,0,0,0.55)', borderRadius:20, padding:'4px 10px', display:'flex', alignItems:'center', gap:5 }}>
                 <span style={{ fontSize:12 }}>{mp.icon}</span>
                 <span style={{ color:'#fff', fontSize:11, fontWeight:600 }}>{mp.label}</span>
@@ -107,12 +107,11 @@ export default function LandingPageClient({ product }: Props) {
               <div style={{ display:'flex', gap:6, padding:'10px 12px', overflowX:'auto' }}>
                 {allImages.map((img, i) => (
                   <button key={i} onClick={() => setImgIdx(i)}
-                    style={{ width:56, height:56, flexShrink:0, borderRadius:8, overflow:'hidden', border: i===imgIdx ? `2px solid ${btnColor}` : '2px solid #e5e7eb', cursor:'pointer', background:'#f9fafb', padding:0 }}>
+                    style={{ width:56, height:56, flexShrink:0, borderRadius:8, overflow:'hidden', border:`2px solid ${i===imgIdx?btnColor:'#e5e7eb'}`, cursor:'pointer', background:'#f9fafb', padding:0 }}>
                     <img src={img} alt={`foto ${i+1}`} style={{ width:'100%', height:'100%', objectFit:'cover' }}
                       onError={e => { (e.target as HTMLImageElement).style.display='none' }} />
                   </button>
                 ))}
-                {/* Thumbnail video jika ada */}
                 {embedUrl && (
                   <button onClick={() => setShowVideo(true)}
                     style={{ width:56, height:56, flexShrink:0, borderRadius:8, border:'2px solid #e5e7eb', cursor:'pointer', background:'#fee2e2', display:'flex', alignItems:'center', justifyContent:'center' }}>
@@ -124,23 +123,18 @@ export default function LandingPageClient({ product }: Props) {
           </div>
         )}
 
-        {/* ── VIDEO EMBED ── */}
+        {/* Video embed */}
         {embedUrl && (showVideo || allImages.length === 0) && (
-          <div style={{ background:'#000', marginTop: allImages.length > 0 ? 4 : 0 }}>
+          <div style={{ background:'#000', marginTop:allImages.length>0?4:0 }}>
             <div style={{ position:'relative', paddingTop:'56.25%' }}>
-              <iframe
-                src={embedUrl}
-                title="Video produk"
-                frameBorder="0"
+              <iframe src={embedUrl} title="Video produk" frameBorder="0"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                 allowFullScreen
-                style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%' }}
-              />
+                style={{ position:'absolute', top:0, left:0, width:'100%', height:'100%' }} />
             </div>
           </div>
         )}
 
-        {/* Tombol tampilkan video (jika ada gambar & video, tapi video disembunyikan) */}
         {embedUrl && allImages.length > 0 && !showVideo && (
           <button onClick={() => setShowVideo(true)}
             style={{ width:'100%', background:'#fff', border:'none', borderTop:'4px solid #f5f5f5', padding:'12px 16px', display:'flex', alignItems:'center', gap:8, cursor:'pointer', color:'#ef4444', fontSize:13, fontWeight:600 }}>
@@ -148,8 +142,8 @@ export default function LandingPageClient({ product }: Props) {
           </button>
         )}
 
-        {/* ── INFO PRODUK ── */}
-        <div style={{ background:'#fff', padding:'16px 16px 0', borderTop:'4px solid #f5f5f5', marginTop: (embedUrl && !showVideo && allImages.length > 0) ? 0 : 4 }}>
+        {/* Info produk */}
+        <div style={{ background:'#fff', padding:'16px 16px 0', borderTop:'4px solid #f5f5f5', marginTop:4 }}>
           {product.price && (
             <p style={{ fontSize:24, fontWeight:700, color:'#EE4D2D', marginBottom:8 }}>
               {formatRupiah(product.price)}
@@ -161,12 +155,20 @@ export default function LandingPageClient({ product }: Props) {
           <div style={{ height:1, background:'#f3f4f6', margin:'0 -16px' }} />
         </div>
 
+        {/* Kupon & Flash Sale */}
+        <CouponBanner
+          couponCode={product.coupon_code}
+          couponLabel={product.coupon_label}
+          saleEndsAt={product.sale_ends_at}
+          saleLabel={product.sale_label}
+        />
+
         {/* Trust signals */}
-        <div style={{ background:'#fff', padding:'12px 16px', display:'flex', borderTop:'4px solid #f5f5f5' }}>
+        <div style={{ background:'#fff', padding:'12px 16px', display:'flex', borderTop:'4px solid #f5f5f5', marginTop:8 }}>
           {[
-            { icon: Shield, text:'Terverifikasi',    sub:'Link resmi' },
-            { icon: Truck,  text:'Pengiriman Aman',  sub:'Via marketplace' },
-            { icon: Tag,    text:'Harga Terbaik',    sub:'Dari toko resmi' },
+            { icon: Shield, text:'Terverifikasi',   sub:'Link resmi' },
+            { icon: Truck,  text:'Pengiriman Aman', sub:'Via marketplace' },
+            { icon: Tag,    text:'Harga Terbaik',   sub:'Dari toko resmi' },
           ].map(({ icon: Icon, text, sub }) => (
             <div key={text} style={{ flex:1, display:'flex', flexDirection:'column', alignItems:'center', gap:4, padding:'4px' }}>
               <Icon size={20} color="#2563eb" strokeWidth={1.5} />
@@ -199,14 +201,14 @@ export default function LandingPageClient({ product }: Props) {
         </div>
       </div>
 
-      {/* ── STICKY CTA ── */}
+      {/* Sticky CTA */}
       <div style={{ position:'fixed', bottom:0, left:0, right:0, background:'#fff', borderTop:'1px solid #e5e7eb', padding:'12px 16px', zIndex:50 }}>
         <div style={{ maxWidth:600, margin:'0 auto' }}>
           <button onClick={handleBuy}
-            style={{ width:'100%', background: clicked ? '#16a34a' : btnColor, color:'#fff', border:'none', borderRadius:12, padding:'14px 20px', fontSize:15, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s', boxShadow:`0 4px 14px ${btnColor}55` }}>
+            style={{ width:'100%', background: clicked?'#16a34a':btnColor, color:'#fff', border:'none', borderRadius:12, padding:'14px 20px', fontSize:15, fontWeight:700, cursor:'pointer', display:'flex', alignItems:'center', justifyContent:'center', gap:8, transition:'background 0.2s', boxShadow:`0 4px 14px ${btnColor}55` }}>
             {clicked
-              ? <><Check size={18} /> Membuka {mp.label}...</>
-              : <><ShoppingBag size={18} /> Beli di {mp.label}</>
+              ? <><Check size={18}/> Membuka {mp.label}...</>
+              : <><ShoppingBag size={18}/> Beli di {mp.label}</>
             }
           </button>
           <p style={{ textAlign:'center', fontSize:10, color:'#9ca3af', marginTop:6 }}>

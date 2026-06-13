@@ -22,6 +22,10 @@ export default function ProductForm({ product }: ProductFormProps) {
     marketplace:   (product?.marketplace  || 'shopee') as Marketplace,
     slug:          product?.slug          || '',
     video_url:     product?.video_url     || '',
+    coupon_code:   product?.coupon_code   || '',
+    coupon_label:  product?.coupon_label  || '',
+    sale_ends_at:  product?.sale_ends_at ? new Date(product.sale_ends_at).toISOString().slice(0,16) : '',
+    sale_label:    product?.sale_label    || '',
     is_active:     product?.is_active     ?? true,
   })
 
@@ -65,6 +69,10 @@ export default function ProductForm({ product }: ProductFormProps) {
       image_url:     cleanImages[0] || null,   // gambar pertama tetap di image_url untuk OBS
       images:        cleanImages,
       video_url:     form.video_url.trim() || null,
+      coupon_code:   form.coupon_code.trim()  || null,
+      coupon_label:  form.coupon_label.trim() || null,
+      sale_ends_at:  form.sale_ends_at ? new Date(form.sale_ends_at).toISOString() : null,
+      sale_label:    form.sale_label.trim()   || null,
       affiliate_url: form.affiliate_url.trim(),
       marketplace:   form.marketplace,
       slug:          form.slug.trim(),
@@ -268,6 +276,50 @@ export default function ProductForm({ product }: ProductFormProps) {
             placeholder="Deskripsi singkat produk..."
             rows={3}
             className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 resize-none" />
+        </div>
+
+        {/* ── KUPON & FLASH SALE ── */}
+        <div className="border-t border-gray-100 pt-4">
+          <p className="text-sm font-semibold text-gray-700 mb-3">🎫 Kupon & Flash Sale (Opsional)</p>
+
+          <div className="grid grid-cols-2 gap-3 mb-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Kode Kupon</label>
+              <input type="text" value={form.coupon_code}
+                onChange={e => setForm(f => ({ ...f, coupon_code: e.target.value.toUpperCase() }))}
+                placeholder="Contoh: DISKON20"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500 font-mono tracking-wider" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Label Kupon</label>
+              <input type="text" value={form.coupon_label}
+                onChange={e => setForm(f => ({ ...f, coupon_label: e.target.value }))}
+                placeholder="Contoh: Gratis Ongkir"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">🔥 Flash Sale Berakhir</label>
+              <input type="datetime-local" value={form.sale_ends_at}
+                onChange={e => setForm(f => ({ ...f, sale_ends_at: e.target.value }))}
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+            <div>
+              <label className="block text-xs font-medium text-gray-600 mb-1">Label Flash Sale</label>
+              <input type="text" value={form.sale_label}
+                onChange={e => setForm(f => ({ ...f, sale_label: e.target.value }))}
+                placeholder="Contoh: Flash Sale!"
+                className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-green-500" />
+            </div>
+          </div>
+          {form.sale_ends_at && (
+            <button type="button" onClick={() => setForm(f => ({ ...f, sale_ends_at: '', sale_label: '' }))}
+              className="mt-2 text-xs text-red-500 hover:underline">
+              ✕ Hapus flash sale
+            </button>
+          )}
         </div>
 
         {/* Status */}
