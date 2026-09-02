@@ -16,7 +16,11 @@
     "dist:mac": "npm run build && electron-builder --mac",
     "dist:linux": "npm run build && electron-builder --linux",
     "dist:portable": "npm run build && electron-builder --win portable",
-    "dist:win:all": "npm run build && electron-builder --win --x64 --ia32"
+    "dist:win:all": "npm run build && electron-builder --win --x64 --ia32",
+    "dist:offline:win": "node scripts/set-mode.js offline && npm run build && electron-builder --win && node scripts/set-mode.js online",
+    "dist:offline:mac": "node scripts/set-mode.js offline && npm run build && electron-builder --mac && node scripts/set-mode.js online",
+    "dist:offline:linux": "node scripts/set-mode.js offline && npm run build && electron-builder --linux && node scripts/set-mode.js online",
+    "dist:offline:portable": "node scripts/set-mode.js offline && npm run build && electron-builder --win portable && node scripts/set-mode.js online"
   },
   "build": {
     "appId": "com.noobiiefun.affiliate-rotator",
@@ -32,6 +36,7 @@
       "node_modules/**/*",
       "package.json",
       "next.config.js",
+      ".env.production.local",
       "supabase/schema.sql",
       "supabase/migration_v2.sql",
       "supabase/migration_v3.sql"

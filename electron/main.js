@@ -20,6 +20,27 @@ const NEXT_DIR    = path.join(__dirname, '..')
 const ICON_PATH   = path.join(__dirname, 'assets', 'icon.png')
 const TRAY_PATH   = path.join(__dirname, 'assets', 'tray.png')
 
+// Mode Offline vs Online ditentukan SAAT BUILD (lihat .env.production.local
+// yang dibaca `next build`), bukan saat aplikasi jalan — karena Next.js
+// "membakar" nilai NEXT_PUBLIC_* ke dalam kode browser saat build.
+// Di sini kita cuma membaca marker yang sama supaya main.js tahu perilaku
+// apa yang harus dipakai (skip Supabase, skip login, dst).
+function isOfflineBuild() {
+  try {
+    const envFile = path.join(NEXT_DIR, '.env.production.local')
+    if (fs.existsSync(envFile)) {
+      const content = fs.readFileSync(envFile, 'utf-8')
+      return /NEXT_PUBLIC_OFFLINE_MODE\s*=\s*true/i.test(content)
+    }
+  } catch {}
+  return false
+}
+const OFFLINE_BUILD = isOfflineBuild()
+
+// Folder data lokal (produk, rotator, dsb) & upload gambar untuk Mode Offline.
+const OFFLINE_DB_PATH     = path.join(USER_DATA, 'offline-data.json')
+const OFFLINE_UPLOADS_DIR = path.join(USER_DATA, 'offline-uploads')
+
 // ─── State ────────────────────────────────────────────────
 let tray          = null
 let splashWin     = null
@@ -55,14 +76,21 @@ function writeEnv(cfg, port) {
   if (!fs.existsSync(USER_DATA)) fs.mkdirSync(USER_DATA, { recursive: true })
   const ip   = getLocalIP()
   const base = `http://${ip}:${port}`
-  const content = [
-    `NEXT_PUBLIC_SUPABASE_URL=${cfg.supabaseUrl}`,
-    `NEXT_PUBLIC_SUPABASE_ANON_KEY=${cfg.supabaseAnonKey}`,
-    `SUPABASE_SERVICE_ROLE_KEY=${cfg.supabaseServiceKey}`,
-    `NEXT_PUBLIC_BASE_URL=${base}`,
-    `IP_HASH_SALT=${cfg.salt || 'affiliate-salt-' + Date.now()}`,
-  ].join('\n')
-  fs.writeFileSync(ENV_PATH, content)
+  const lines = OFFLINE_BUILD
+    ? [
+        `NEXT_PUBLIC_OFFLINE_MODE=true`,
+        `NEXT_PUBLIC_BASE_URL=${base}`,
+        `OFFLINE_DB_PATH=${OFFLINE_DB_PATH}`,
+        `OFFLINE_UPLOADS_DIR=${OFFLINE_UPLOADS_DIR}`,
+      ]
+    : [
+        `NEXT_PUBLIC_SUPABASE_URL=${cfg.supabaseUrl}`,
+        `NEXT_PUBLIC_SUPABASE_ANON_KEY=${cfg.supabaseAnonKey}`,
+        `SUPABASE_SERVICE_ROLE_KEY=${cfg.supabaseServiceKey}`,
+        `NEXT_PUBLIC_BASE_URL=${base}`,
+        `IP_HASH_SALT=${cfg.salt || 'affiliate-salt-' + Date.now()}`,
+      ]
+  fs.writeFileSync(ENV_PATH, lines.join('\n'))
   return base
 }
 
@@ -86,14 +114,22 @@ async function findFreePort(start = 3000) {
 // ─── Start Next.js menggunakan Node API langsung ───────────
 // Ini yang benar untuk Electron — tidak pakai spawn npm
 async function startNextServer(cfg, port) {
-  // Set env vars sebelum load next
-  process.env.NEXT_PUBLIC_SUPABASE_URL      = cfg.supabaseUrl
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = cfg.supabaseAnonKey
-  process.env.SUPABASE_SERVICE_ROLE_KEY     = cfg.supabaseServiceKey
-  process.env.NEXT_PUBLIC_BASE_URL          = `http://${getLocalIP()}:${port}`
-  process.env.IP_HASH_SALT                  = cfg.salt || 'affiliate-salt'
-  process.env.PORT                          = String(port)
-  process.env.HOSTNAME                      = '0.0.0.0'
+  if (OFFLINE_BUILD) {
+    // Mode Offline: tidak ada Supabase sama sekali, data disimpan lokal.
+    process.env.NEXT_PUBLIC_OFFLINE_MODE = 'true'
+    process.env.NEXT_PUBLIC_BASE_URL     = `http://${getLocalIP()}:${port}`
+    process.env.OFFLINE_DB_PATH          = OFFLINE_DB_PATH
+    process.env.OFFLINE_UPLOADS_DIR      = OFFLINE_UPLOADS_DIR
+    if (!fs.existsSync(OFFLINE_UPLOADS_DIR)) fs.mkdirSync(OFFLINE_UPLOADS_DIR, { recursive: true })
+  } else {
+    process.env.NEXT_PUBLIC_SUPABASE_URL      = cfg.supabaseUrl
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY = cfg.supabaseAnonKey
+    process.env.SUPABASE_SERVICE_ROLE_KEY     = cfg.supabaseServiceKey
+    process.env.NEXT_PUBLIC_BASE_URL          = `http://${getLocalIP()}:${port}`
+    process.env.IP_HASH_SALT                  = cfg.salt || 'affiliate-salt'
+  }
+  process.env.PORT     = String(port)
+  process.env.HOSTNAME  = '0.0.0.0'
 
   // Load Next.js server langsung
   const nextPath = path.join(NEXT_DIR, 'node_modules', 'next')
@@ -126,7 +162,7 @@ function buildTray() {
     ? nativeImage.createFromPath(TRAY_PATH).resize({ width: 16, height: 16 })
     : nativeImage.createEmpty()
   tray = new Tray(img)
-  tray.setToolTip('Affiliate Rotator')
+  tray.setToolTip(OFFLINE_BUILD ? 'Affiliate Rotator (Offline)' : 'Affiliate Rotator')
   refreshTrayMenu()
   tray.on('double-click', () => {
     if (serverRunning) shell.openExternal(`http://localhost:${serverPort}/dashboard`)
@@ -137,7 +173,7 @@ function buildTray() {
 function refreshTrayMenu() {
   if (!tray) return
   tray.setContextMenu(Menu.buildFromTemplate([
-    { label: '📺 Affiliate Rotator', enabled: false },
+    { label: OFFLINE_BUILD ? '📺 Affiliate Rotator (Offline)' : '📺 Affiliate Rotator', enabled: false },
     { type: 'separator' },
     { label: serverRunning ? `✅ Berjalan — port ${serverPort}` : '⭕ Berhenti', enabled: false },
     serverRunning
@@ -204,8 +240,15 @@ async function startServer() {
     return
   }
 
-  const cfg = readConfig()
-  if (!cfg || !cfg.supabaseUrl) { openSetup(); return }
+  let cfg = readConfig()
+
+  if (OFFLINE_BUILD) {
+    // Mode Offline: tidak butuh Supabase, cukup port. Pakai default kalau
+    // belum pernah disimpan sama sekali.
+    if (!cfg) cfg = { port: 3000 }
+  } else {
+    if (!cfg || !cfg.supabaseUrl) { openSetup(); return }
+  }
 
   showSplash('Menyiapkan server...')
 
@@ -228,7 +271,9 @@ async function startServer() {
     refreshTrayMenu()
     dialog.showErrorBox(
       'Gagal Menjalankan Server',
-      err.message + '\n\nPastikan:\n1. Credentials Supabase sudah benar\n2. Coba restart aplikasi'
+      err.message + (OFFLINE_BUILD
+        ? '\n\nCoba restart aplikasi. Kalau port bentrok, ubah port di Pengaturan.'
+        : '\n\nPastikan:\n1. Credentials Supabase sudah benar\n2. Coba restart aplikasi')
     )
   }
 }
@@ -275,6 +320,14 @@ async function testSupabaseConnection(cfg) {
   })
 }
 
+// ─── Reset data lokal (Mode Offline) ───────────────────────
+function resetOfflineData() {
+  try {
+    if (fs.existsSync(OFFLINE_DB_PATH)) fs.unlinkSync(OFFLINE_DB_PATH)
+    return { ok: true }
+  } catch (e) { return { ok: false, error: e.message } }
+}
+
 // ─── IPC Handlers ─────────────────────────────────────────
 ipcMain.handle('save-setup', async (_, cfg) => {
   try { saveConfig(cfg); return { ok: true } }
@@ -291,24 +344,32 @@ ipcMain.handle('reset-config',    () => {
     return { ok: true }
   } catch (e) { return { ok: false, error: e.message } }
 })
+ipcMain.handle('reset-offline-data', () => resetOfflineData())
 ipcMain.handle('get-status',      () => ({ running: serverRunning, port: serverPort }))
 ipcMain.handle('test-connection', (_, cfg) => testSupabaseConnection(cfg))
+ipcMain.handle('get-mode',        () => ({ offline: OFFLINE_BUILD }))
 ipcMain.handle('get-paths',       () => ({
   userData: USER_DATA,
   envPath:  ENV_PATH,
   nextDir:  NEXT_DIR,
+  offlineDbPath: OFFLINE_DB_PATH,
 }))
 
 // ─── App Lifecycle ────────────────────────────────────────
 app.whenReady().then(() => {
-  app.setAppUserModelId('com.noobiiefun.affiliate-rotator')
+  app.setAppUserModelId(OFFLINE_BUILD ? 'com.noobiiefun.affiliate-rotator-offline' : 'com.noobiiefun.affiliate-rotator')
   if (!fs.existsSync(USER_DATA)) fs.mkdirSync(USER_DATA, { recursive: true })
 
   buildTray()
 
-  const cfg = readConfig()
-  if (!cfg || !cfg.supabaseUrl) openSetup()
-  else startServer()
+  if (OFFLINE_BUILD) {
+    // Mode Offline: langsung jalan, tidak perlu setup Supabase/login.
+    startServer()
+  } else {
+    const cfg = readConfig()
+    if (!cfg || !cfg.supabaseUrl) openSetup()
+    else startServer()
+  }
 })
 
 app.on('window-all-closed', e => { if (!isQuitting) e.preventDefault() })

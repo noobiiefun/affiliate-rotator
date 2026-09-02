@@ -4,6 +4,7 @@ import { useEffect, useState, useRef } from 'react'
 import { useParams } from 'next/navigation'
 import QRCode from 'qrcode'
 import { supabase } from '@/lib/supabase'
+import { getRotatorForObs, trackClick, OFFLINE } from '@/lib/data'
 import { Product, Rotator, ThemeConfig, DEFAULT_THEME, MARKETPLACE_INFO } from '@/types'
 import { formatRupiah, getBaseUrl } from '@/lib/utils'
 
@@ -50,21 +51,9 @@ export default function ObsOverlayPage() {
   }, [rotatorId])
 
   async function fetchData() {
-    let { data: rot } = await supabase
-      .from('rotators').select('*').eq('slug', rotatorId).single()
-    if (!rot) {
-      const r = await supabase.from('rotators').select('*').eq('id', rotatorId).single()
-      rot = r.data
-    }
+    const { rotator: rot, items: its } = await getRotatorForObs(rotatorId)
     if (!rot) { setLoaded(true); return }
     setRotator(rot)
-
-    const { data: its } = await supabase
-      .from('rotator_items')
-      .select('id, position, spotlight_duration, spotlight_active, product:products(*)')
-      .eq('rotator_id', rot.id)
-      .eq('is_active', true)
-      .order('position')
     setItems((its as any) || [])
 
     await fetchSpotlightForRotator(rot.id)
@@ -77,6 +66,9 @@ export default function ObsOverlayPage() {
   }
 
   async function fetchSpotlightForRotator(rotId: string) {
+    // Fitur spotlight (flash-sale highlight) belum tersedia di mode offline.
+    if (OFFLINE) { setSpotlight(null); return }
+
     const { data } = await supabase
       .from('spotlight_events')
       .select('*')
@@ -143,14 +135,20 @@ export default function ObsOverlayPage() {
   }, [spotlight])
 
   // Generate QR
+  // Mode Offline: QR langsung berisi link affiliate — begitu discan, HP penonton
+  // langsung ke marketplace tanpa mampir ke halaman/app ini sama sekali.
+  // Mode Online: QR berisi link landing page kita (/p/slug) seperti semula.
   useEffect(() => {
     if (!currentItem) return
-    QRCode.toDataURL(`${getBaseUrl()}/p/${currentItem.product.slug}`, {
+    const target = OFFLINE
+      ? currentItem.product.affiliate_url
+      : `${getBaseUrl()}/p/${currentItem.product.slug}`
+    QRCode.toDataURL(target, {
       width: 200, margin: 1,
       color: { dark: '#1a1a2e', light: '#ffffff' },
       errorCorrectionLevel: 'M',
     }).then(setQrDataUrl)
-  }, [currentItem?.product.slug])
+  }, [currentItem?.product.slug, currentItem?.product.affiliate_url])
 
   // Auto-rotate (hanya jika tidak ada spotlight)
   useEffect(() => {
@@ -170,13 +168,11 @@ export default function ObsOverlayPage() {
     return () => clearInterval(tick)
   }, [rotator, items.length, isSpotlightActive])
 
-  async function trackClick() {
+  async function handleQrClick() {
+    // Tidak melakukan apa-apa di mode offline (klik langsung buka marketplace,
+    // browser yang menangani navigasi — tidak ada tracking).
     if (!currentItem || !rotator) return
-    await supabase.from('click_events').insert({
-      product_id: currentItem.product.id,
-      rotator_id: rotator.id,
-      source: 'qr',
-    })
+    await trackClick(currentItem.product.id, rotator.id, 'qr')
   }
 
   if (!loaded) return (
@@ -284,7 +280,7 @@ export default function ObsOverlayPage() {
                 }
               </div>
 
-              <div onClick={trackClick} style={{ width:imgSize, height:imgSize, borderRadius:10, overflow:'hidden', flexShrink:0, background:'#fff', padding:4, cursor:'pointer', border:isSpotlightActive?'2px solid #f59e0b':'none' }}>
+              <div onClick={handleQrClick} style={{ width:imgSize, height:imgSize, borderRadius:10, overflow:'hidden', flexShrink:0, background:'#fff', padding:4, cursor:'pointer', border:isSpotlightActive?'2px solid #f59e0b':'none' }}>
                 {qrDataUrl && <img src={qrDataUrl} alt="QR" style={{ width:'100%', height:'100%' }} />}
               </div>
 

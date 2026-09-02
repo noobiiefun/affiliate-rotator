@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { saveProduct } from '@/lib/data'
 import { Product, Marketplace, MARKETPLACE_INFO, getProductImages } from '@/types'
 import { generateSlug } from '@/lib/utils'
 import { Save, ArrowLeft, ExternalLink, Plus, Trash2, GripVertical, Youtube } from 'lucide-react'
@@ -85,12 +85,10 @@ export default function ProductForm({ product }: ProductFormProps) {
       return
     }
 
-    const { error: err } = isEdit
-      ? await supabase.from('products').update(payload).eq('id', product.id)
-      : await supabase.from('products').insert(payload)
+    const { error: err } = await saveProduct(payload, isEdit ? product.id : undefined)
 
     if (err) {
-      setError(err.message.includes('slug') ? 'Slug sudah digunakan, coba yang lain.' : err.message)
+      setError(err.includes('slug') || err.includes('Slug') ? 'Slug sudah digunakan, coba yang lain.' : err)
       setSaving(false)
       return
     }

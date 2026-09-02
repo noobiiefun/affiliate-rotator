@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import { supabase } from '@/lib/supabase'
+import { listGroups, uploadLogo, saveRotator } from '@/lib/data'
 import {
   Rotator, RotatorGroup, ThemeConfig, DEFAULT_THEME,
   OVERLAY_SIZE_LABELS, OVERLAY_POSITION_LABELS, OverlaySize, OverlayPosition
@@ -42,7 +42,7 @@ export default function RotatorForm({ rotator }: Props) {
   )
 
   useEffect(() => {
-    supabase.from('rotator_groups').select('*').order('name').then(({ data }) => setGroups(data || []))
+    listGroups().then(setGroups)
   }, [])
 
   function handleNameChange(name: string) {
@@ -53,13 +53,9 @@ export default function RotatorForm({ rotator }: Props) {
     const file = e.target.files?.[0]
     if (!file) return
     setUploading(true)
-    // Upload ke Supabase Storage bucket "logos"
-    const path = `logos/${Date.now()}-${file.name}`
-    const { data, error: uploadErr } = await supabase.storage.from('logos').upload(path, file, { upsert: true })
-    if (!uploadErr && data) {
-      const { data: { publicUrl } } = supabase.storage.from('logos').getPublicUrl(data.path)
-      setTheme(t => ({ ...t, logo_url: publicUrl }))
-    }
+    // Upload ke Supabase Storage (online) atau folder lokal (offline) — lihat lib/data.ts
+    const url = await uploadLogo(file)
+    if (url) setTheme(t => ({ ...t, logo_url: url }))
     setUploading(false)
   }
 
@@ -79,12 +75,10 @@ export default function RotatorForm({ rotator }: Props) {
       theme_config: theme,
     }
 
-    const { data, error: err } = isEdit
-      ? await supabase.from('rotators').update(payload).eq('id', rotator.id).select().single()
-      : await supabase.from('rotators').insert(payload).select().single()
+    const { data, error: err } = await saveRotator(payload, isEdit ? rotator.id : undefined)
 
     if (err) {
-      setError(err.message.includes('slug') ? 'Slug sudah dipakai, coba yang lain.' : err.message)
+      setError(err.includes('slug') || err.includes('Slug') ? 'Slug sudah dipakai, coba yang lain.' : err)
       setSaving(false)
       return
     }
@@ -345,7 +339,6 @@ export default function RotatorForm({ rotator }: Props) {
               )}
               <p className="text-xs text-gray-400 mt-1">
                 Logo tampil di pojok kanan atas kartu overlay.
-                Butuh bucket "logos" di Supabase Storage (public).
               </p>
             </div>
 

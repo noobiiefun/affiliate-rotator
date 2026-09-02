@@ -6,7 +6,7 @@ import {
   Plus, Pencil, Trash2, Tv2, Copy, Check,
   ToggleLeft, ToggleRight, Clock, FolderOpen, ChevronDown, ChevronRight
 } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { listRotators, listGroups, toggleRotatorActive, deleteRotatorById, deleteGroupById } from '@/lib/data'
 import { Rotator, RotatorGroup } from '@/types'
 import { getBaseUrl } from '@/lib/utils'
 
@@ -23,29 +23,26 @@ export default function RotatorPage() {
 
   async function fetchAll() {
     setLoading(true)
-    const [{ data: rots }, { data: grps }] = await Promise.all([
-      supabase.from('rotators').select('*, group:rotator_groups(*)').order('created_at', { ascending: false }),
-      supabase.from('rotator_groups').select('*').order('name'),
-    ])
+    const [rots, grps] = await Promise.all([listRotators(), listGroups()])
     setRotators((rots as any) || [])
     setGroups(grps || [])
     setLoading(false)
   }
 
   async function toggleActive(r: RotatorWithGroup) {
-    await supabase.from('rotators').update({ is_active: !r.is_active }).eq('id', r.id)
+    await toggleRotatorActive(r)
     fetchAll()
   }
 
   async function deleteRotator(id: string) {
     if (!confirm('Hapus rotator ini? Semua produk di dalamnya juga akan dihapus.')) return
-    await supabase.from('rotators').delete().eq('id', id)
+    await deleteRotatorById(id)
     fetchAll()
   }
 
   async function deleteGroup(id: string) {
     if (!confirm('Hapus grup ini? Rotator di dalamnya tidak akan dihapus, hanya grupnya.')) return
-    await supabase.from('rotator_groups').delete().eq('id', id)
+    await deleteGroupById(id)
     fetchAll()
   }
 

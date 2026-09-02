@@ -12,6 +12,8 @@ import { Product, Rotator, SpotlightEvent } from '@/types'
 import { formatRupiah } from '@/lib/utils'
 import { MARKETPLACE_INFO } from '@/types'
 
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE_MODE === 'true'
+
 interface RotatorItemFull {
   id: string; position: number
   spotlight_duration: number | null
@@ -56,6 +58,7 @@ export default function SpotlightPage() {
   }, [active])
 
   async function fetchAll() {
+    if (OFFLINE) { setLoading(false); return } // fitur spotlight tidak tersedia di mode offline
     setLoading(true)
     const [{ data: rot }, { data: its }, { data: spotlights }] = await Promise.all([
       supabase.from('rotators').select('*').eq('id', rotatorId).single(),
@@ -135,6 +138,21 @@ export default function SpotlightPage() {
     fetchAll()
   }
 
+  if (OFFLINE) return (
+    <div className="p-8">
+      <Link href={`/rotator/${rotatorId}`} className="inline-flex items-center gap-1.5 text-sm text-gray-500 hover:text-gray-700 mb-4">
+        <ArrowLeft size={16} /> Kembali
+      </Link>
+      <div className="bg-white border border-dashed border-gray-300 rounded-xl p-16 text-center max-w-lg">
+        <Zap size={28} className="text-gray-300 mx-auto mb-3" />
+        <p className="text-gray-600 font-medium">Fitur Spotlight belum tersedia di Mode Offline</p>
+        <p className="text-gray-400 text-sm mt-1">
+          Rotasi normal, tema, dan kecepatan tetap berjalan seperti biasa — hanya highlight
+          flash-sale sementara ini yang perlu mode online (Supabase).
+        </p>
+      </div>
+    </div>
+  )
   if (loading) return <div className="p-8 text-gray-400 text-sm">Memuat...</div>
   if (!rotator) return <div className="p-8 text-gray-400 text-sm">Rotator tidak ditemukan.</div>
 

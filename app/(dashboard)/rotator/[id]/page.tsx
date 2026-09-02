@@ -7,7 +7,7 @@ import {
   ArrowLeft, Plus, Trash2, GripVertical, Copy, Check,
   Tv2, Settings, Clock, Package, ExternalLink
 } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { getRotatorById, listRotatorItems, listActiveProducts, addRotatorItem, removeRotatorItem, reorderRotatorItems } from '@/lib/data'
 import { Product, Rotator, RotatorItem, MARKETPLACE_INFO } from '@/types'
 import { getBaseUrl, formatRupiah } from '@/lib/utils'
 
@@ -35,10 +35,10 @@ export default function RotatorDetailPage() {
 
   async function fetchAll() {
     setLoading(true)
-    const [{ data: rot }, { data: its }, { data: prods }] = await Promise.all([
-      supabase.from('rotators').select('*').eq('id', id).single(),
-      supabase.from('rotator_items').select('*, product:products(*)').eq('rotator_id', id).order('position'),
-      supabase.from('products').select('*').eq('is_active', true).order('name'),
+    const [rot, its, prods] = await Promise.all([
+      getRotatorById(id),
+      listRotatorItems(id),
+      listActiveProducts(),
     ])
     setRotator(rot)
     setItems((its as any) || [])
@@ -52,18 +52,12 @@ export default function RotatorDetailPage() {
   )
 
   async function addProduct(product: Product) {
-    const position = items.length
-    await supabase.from('rotator_items').insert({
-      rotator_id: id,
-      product_id: product.id,
-      position,
-      is_active: true,
-    })
+    await addRotatorItem(id, product.id)
     fetchAll()
   }
 
   async function removeItem(itemId: string) {
-    await supabase.from('rotator_items').delete().eq('id', itemId)
+    await removeRotatorItem(itemId)
     fetchAll()
   }
 
@@ -84,12 +78,8 @@ export default function RotatorDetailPage() {
     setDragIdx(null)
     setDragOverIdx(null)
 
-    // Update positions in DB
-    await Promise.all(
-      reordered.map((item, pos) =>
-        supabase.from('rotator_items').update({ position: pos }).eq('id', item.id)
-      )
-    )
+    // Update urutan posisi
+    await reorderRotatorItems(id, reordered.map(item => item.id))
   }
 
   function copyObsUrl() {

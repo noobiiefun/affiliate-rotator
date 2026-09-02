@@ -1,8 +1,8 @@
 import { createServerClient } from '@supabase/ssr'
 import { cookies } from 'next/headers'
 
-const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const supabaseUrl  = process.env.NEXT_PUBLIC_SUPABASE_URL      || 'http://localhost:54321'
+const supabaseAnon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY || 'offline-placeholder-anon-key'
 
 export function createServerSupabase() {
   const cookieStore = cookies()

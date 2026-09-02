@@ -1,8 +1,11 @@
 import { createServerSupabase } from '@/lib/supabase-server'
 import AnalyticsClient from './AnalyticsClient'
 import { Marketplace } from '@/types'
+import { WifiOff } from 'lucide-react'
 
 export const revalidate = 0
+
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE_MODE === 'true'
 
 // Tipe persis yang dikembalikan Supabase dari query join
 interface RawClickEvent {
@@ -29,6 +32,21 @@ interface RawTopProduct {
 }
 
 export default async function AnalyticsPage() {
+  if (OFFLINE) {
+    return (
+      <div className="p-8">
+        <div className="bg-white border border-dashed border-gray-300 rounded-xl p-16 text-center max-w-lg mx-auto">
+          <WifiOff size={28} className="text-gray-300 mx-auto mb-3" />
+          <p className="text-gray-600 font-medium">Analytics tidak tersedia di Mode Offline</p>
+          <p className="text-gray-400 text-sm mt-1">
+            QR di overlay OBS langsung mengarah ke link affiliate tanpa lewat server,
+            jadi tidak ada data klik yang bisa dilacak.
+          </p>
+        </div>
+      </div>
+    )
+  }
+
   const supabase      = createServerSupabase()
   const thirtyDaysAgo = new Date()
   thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)

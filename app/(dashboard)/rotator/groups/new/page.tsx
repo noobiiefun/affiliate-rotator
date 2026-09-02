@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
 import { ArrowLeft, Save } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { createGroup } from '@/lib/data'
 
 const PRESET_COLORS = [
   '#8b5cf6','#6366f1','#3b82f6','#06b6d4',
@@ -22,12 +22,12 @@ export default function NewGroupPage() {
     e.preventDefault()
     if (!form.name.trim()) { setError('Nama grup wajib diisi'); return }
     setSaving(true)
-    const { error: err } = await supabase.from('rotator_groups').insert({
+    const { error: err } = await createGroup({
       name: form.name.trim(),
       description: form.description.trim() || null,
       color: form.color,
     })
-    if (err) { setError(err.message); setSaving(false); return }
+    if (err) { setError(err); setSaving(false); return }
     router.push('/rotator')
     router.refresh()
   }

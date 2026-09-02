@@ -2,9 +2,8 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { Plus, Pencil, Trash2, ToggleLeft, ToggleRight, Search } from 'lucide-react'
-import { supabase } from '@/lib/supabase'
+import { listProducts, toggleProductActive, deleteProductById } from '@/lib/data'
 import { Product, MARKETPLACE_INFO } from '@/types'
 import { formatRupiah } from '@/lib/utils'
 
@@ -17,25 +16,18 @@ export default function ProductsPage() {
 
   async function fetchProducts() {
     setLoading(true)
-    const { data } = await supabase
-      .from('products')
-      .select('*')
-      .order('created_at', { ascending: false })
-    setProducts(data || [])
+    setProducts(await listProducts())
     setLoading(false)
   }
 
   async function toggleActive(product: Product) {
-    await supabase
-      .from('products')
-      .update({ is_active: !product.is_active })
-      .eq('id', product.id)
+    await toggleProductActive(product)
     fetchProducts()
   }
 
   async function deleteProduct(id: string) {
     if (!confirm('Hapus produk ini?')) return
-    await supabase.from('products').delete().eq('id', id)
+    await deleteProductById(id)
     fetchProducts()
   }
 

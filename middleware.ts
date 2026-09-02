@@ -7,6 +7,9 @@ export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
   const res = NextResponse.next()
 
+  // Mode Offline: tidak ada login sama sekali — dashboard langsung bisa diakses.
+  if (process.env.NEXT_PUBLIC_OFFLINE_MODE === 'true') return res
+
   const isProtected = PROTECTED.some(p => pathname.startsWith(p))
   if (!isProtected) return res
 

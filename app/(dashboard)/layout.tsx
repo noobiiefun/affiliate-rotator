@@ -2,30 +2,34 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { LayoutDashboard, Package, RotateCcw, BarChart2, Tv2, ChevronRight, LogOut, User } from 'lucide-react'
+import { LayoutDashboard, Package, RotateCcw, BarChart2, Tv2, ChevronRight, LogOut, User, WifiOff } from 'lucide-react'
 import { createBrowserSupabase } from '@/lib/supabase-auth'
 import { useEffect, useState } from 'react'
+
+const OFFLINE = process.env.NEXT_PUBLIC_OFFLINE_MODE === 'true'
 
 const navItems = [
   { href: '/dashboard',  label: 'Overview',   icon: LayoutDashboard },
   { href: '/products',   label: 'Produk',     icon: Package },
   { href: '/rotator',    label: 'Rotator',    icon: RotateCcw },
-  { href: '/analytics',  label: 'Analytics',  icon: BarChart2 },
+  ...(OFFLINE ? [] : [{ href: '/analytics', label: 'Analytics', icon: BarChart2 }]),
 ]
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname()
   const router   = useRouter()
-  const supabase = createBrowserSupabase()
   const [email, setEmail] = useState('')
 
   useEffect(() => {
+    if (OFFLINE) return // tidak ada login/sesi di mode offline
+    const supabase = createBrowserSupabase()
     supabase.auth.getSession().then(({ data: { session } }) => {
       setEmail(session?.user?.email || '')
     })
   }, [])
 
   async function handleLogout() {
+    const supabase = createBrowserSupabase()
     await supabase.auth.signOut()
     router.replace('/login')
     router.refresh()
@@ -66,21 +70,30 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
           })}
         </nav>
 
-        {/* User + Logout */}
+        {/* User + Logout, atau badge Mode Offline */}
         <div className="px-3 py-3 border-t border-gray-200 space-y-1">
-          {email && (
-            <div className="flex items-center gap-2 px-3 py-2">
-              <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
-                <User size={12} className="text-green-700" />
-              </div>
-              <p className="text-xs text-gray-500 truncate">{email}</p>
+          {OFFLINE ? (
+            <div className="flex items-center gap-2 px-3 py-2 text-gray-400">
+              <WifiOff size={14} />
+              <p className="text-xs">Mode Offline — tanpa login</p>
             </div>
+          ) : (
+            <>
+              {email && (
+                <div className="flex items-center gap-2 px-3 py-2">
+                  <div className="w-6 h-6 rounded-full bg-green-100 flex items-center justify-center flex-shrink-0">
+                    <User size={12} className="text-green-700" />
+                  </div>
+                  <p className="text-xs text-gray-500 truncate">{email}</p>
+                </div>
+              )}
+              <button onClick={handleLogout}
+                className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors">
+                <LogOut size={16} />
+                Keluar
+              </button>
+            </>
           )}
-          <button onClick={handleLogout}
-            className="w-full flex items-center gap-3 px-3 py-2 rounded-lg text-sm text-gray-500 hover:bg-red-50 hover:text-red-600 transition-colors">
-            <LogOut size={16} />
-            Keluar
-          </button>
         </div>
       </aside>
 

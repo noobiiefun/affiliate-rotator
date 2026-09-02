@@ -134,8 +134,15 @@
     <a onclick="openLink('https://supabase.com')">supabase.com</a>
   </div>
 
+  <!-- Badge Mode Offline -->
+  <div class="alert alert-success" id="offlineBadge" style="display:none">
+    📴 <strong>Mode Offline aktif</strong> — semua data (produk, rotator, gambar)
+    disimpan langsung di komputer ini. Tidak perlu Supabase, tidak perlu internet,
+    tidak ada login.
+  </div>
+
   <!-- Konfigurasi Supabase -->
-  <div class="section">
+  <div class="section" id="supabaseSection">
     <div class="section-title">⚙️ Konfigurasi Supabase</div>
 
     <div class="field">
@@ -180,7 +187,7 @@
   <div class="btn-row">
     <button class="btn btn-secondary" onclick="window.electronAPI.startServer()">▶ Start Server</button>
     <button class="btn btn-secondary" onclick="window.electronAPI.stopServer()">⏹ Stop Server</button>
-    <button class="btn btn-danger"    onclick="resetCfg()">🗑 Reset</button>
+    <button class="btn btn-danger" id="btnReset" onclick="resetCfg()">🗑 Reset</button>
   </div>
 
 </div>
@@ -213,15 +220,33 @@
     setTimeout(refreshStatus, 3000)
   }
 
+  let OFFLINE_MODE = false
+
   async function init() {
+    try {
+      const mode = await window.electronAPI.getMode()
+      OFFLINE_MODE = !!(mode && mode.offline)
+    } catch {}
+
+    if (OFFLINE_MODE) {
+      // Sembunyikan semua yang berhubungan dengan Supabase/login.
+      document.getElementById('infoBox').style.display        = 'none'
+      document.getElementById('warnBox').style.display         = 'none'
+      document.getElementById('supabaseSection').style.display = 'none'
+      document.getElementById('btnTest').style.display         = 'none'
+      document.getElementById('offlineBadge').style.display    = 'block'
+      document.getElementById('btnSave').textContent           = '💾 Simpan Port & Mulai'
+      document.getElementById('btnReset').textContent          = '🗑 Reset Data Lokal'
+    }
+
     const cfg = await window.electronAPI.getConfig()
     if (cfg) {
       document.getElementById('supabaseUrl').value        = cfg.supabaseUrl || ''
       document.getElementById('supabaseAnonKey').value    = cfg.supabaseAnonKey || ''
       document.getElementById('supabaseServiceKey').value = cfg.supabaseServiceKey || ''
       document.getElementById('port').value               = cfg.port || 3000
-      document.getElementById('warnBox').style.display    = 'none'
-    } else {
+      if (!OFFLINE_MODE) document.getElementById('warnBox').style.display = 'none'
+    } else if (!OFFLINE_MODE) {
       document.getElementById('warnBox').style.display = 'block'
     }
 
@@ -230,7 +255,9 @@
       const paths = await window.electronAPI.getPaths()
       if (paths) {
         document.getElementById('pathInfo').style.display = 'block'
-        document.getElementById('pathText').textContent   = paths.userData
+        document.getElementById('pathText').textContent   = OFFLINE_MODE
+          ? (paths.offlineDbPath || paths.userData)
+          : paths.userData
       }
     } catch {}
 
@@ -261,10 +288,27 @@
 
   async function save() {
     showAlert('errBox', '')
+    const port = parseInt(document.getElementById('port').value) || 3000
+    const btn  = document.getElementById('btnSave')
+
+    if (OFFLINE_MODE) {
+      btn.disabled = true; btn.textContent = '⏳ Menyimpan...'
+      const r = await window.electronAPI.saveSetup({ port })
+      if (!r.ok) {
+        showAlert('errBox', 'Gagal menyimpan: ' + r.error)
+        btn.disabled = false; btn.textContent = '💾 Simpan Port & Mulai'
+        return
+      }
+      btn.textContent = '✅ Tersimpan!'
+      showAlert('successBox', '✅ Port tersimpan! Server akan dimulai...')
+      setTimeout(() => { btn.disabled = false; btn.textContent = '💾 Simpan Port & Mulai' }, 2000)
+      window.electronAPI.startServer()
+      return
+    }
+
     const url  = document.getElementById('supabaseUrl').value.trim()
     const anon = document.getElementById('supabaseAnonKey').value.trim()
     const svc  = document.getElementById('supabaseServiceKey').value.trim()
-    const port = parseInt(document.getElementById('port').value) || 3000
 
     if (!url || !anon || !svc) { showAlert('errBox', 'Semua field wajib diisi!'); return }
     if (!url.startsWith('https://') || !url.includes('.supabase.co')) {
@@ -272,7 +316,6 @@
       return
     }
 
-    const btn = document.getElementById('btnSave')
     btn.disabled = true; btn.textContent = '⏳ Menyimpan...'
 
     const r = await window.electronAPI.saveSetup({ supabaseUrl: url, supabaseAnonKey: anon, supabaseServiceKey: svc, port })
@@ -290,6 +333,13 @@
   }
 
   async function resetCfg() {
+    if (OFFLINE_MODE) {
+      if (!confirm('Hapus SEMUA data lokal (produk, rotator, grup)? Tindakan ini tidak bisa dibatalkan.')) return
+      const r = await window.electronAPI.resetOfflineData()
+      if (r && r.ok) showAlert('successBox', '✅ Data lokal direset. Muat ulang dashboard untuk melihat perubahan.')
+      else showAlert('errBox', 'Gagal reset: ' + (r && r.error))
+      return
+    }
     if (!confirm('Reset semua konfigurasi? Anda perlu isi ulang credentials Supabase.')) return
     await window.electronAPI.resetConfig()
     document.getElementById('supabaseUrl').value = ''
