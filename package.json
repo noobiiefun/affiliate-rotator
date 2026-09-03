@@ -6,6 +6,8 @@
   "main": "electron/main.js",
   "scripts": {
     "dev": "node dev.js",
+    "dev:offline": "node scripts/set-dev-mode.js offline && npm run dev",
+    "dev:online": "node scripts/set-dev-mode.js online && npm run dev",
     "build": "next build",
     "start": "next start",
     "lint": "next lint",

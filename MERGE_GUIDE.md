@@ -27,17 +27,28 @@ grup, drag-reorder) tetap sama persis di kedua mode.
    ```
 3. Jalankan `npm install` (untuk jaga-jaga kalau ada dependency yang perlu
    di-refresh — sebenarnya tidak ada dependency baru yang ditambahkan).
-4. Coba dulu di mode **online** biasa (`npm run dev`, isi Supabase seperti
-   biasa) — pastikan semuanya masih jalan normal seperti sebelumnya. Ini
-   penting untuk memastikan patch tidak merusak apapun.
-5. Coba mode **offline**:
+4. **Penting soal testing lokal (`npm run dev`):** Next.js hanya membaca file
+   `.env.production.local` saat **build** (`next build`), bukan saat `next dev`.
+   Jadi untuk coba Mode Offline dengan dev server, jangan pakai
+   `.env.production.local` — pakai:
    ```bash
-   echo "NEXT_PUBLIC_OFFLINE_MODE=true" > .env.production.local
-   npm run build
-   npm start
+   npm run dev:offline   # otomatis set flag di .env.local lalu jalankan dev server
    ```
-   Buka `http://localhost:3000/dashboard` — harusnya langsung masuk tanpa
-   login, dan halaman Analytics tidak muncul di menu.
+   Untuk balik ke mode online saat dev: `npm run dev:online`. Kalau server
+   dev sedang berjalan, tetap perlu di-restart penuh (bukan hot-reload) —
+   env variable baru cuma kebaca saat server start ulang.
+5. Coba dulu di mode **online** biasa (`npm run dev:online`, isi Supabase
+   seperti biasa) — pastikan semuanya masih jalan normal seperti sebelumnya.
+   Ini penting untuk memastikan patch tidak merusak apapun.
+6. Coba mode **offline**: `npm run dev:offline`, lalu buka
+   `http://localhost:3000/dashboard` — harusnya langsung masuk tanpa login,
+   dan menu Analytics tidak muncul.
+7. Kalau sudah oke, build jadi `.exe` (build pakai flag yang berbeda,
+   `.env.production.local`, sudah otomatis lewat script):
+   ```bash
+   npm run dist:offline:win
+   ```
+   Detail lengkap ada di `BUILD.md`.
 6. Kalau sudah oke, build jadi `.exe`:
    ```bash
    npm run dist:offline:win
@@ -63,7 +74,8 @@ app/api/local/rotator-lookup/[idOrSlug]/route.ts    ← dipakai overlay OBS
 app/api/local/upload/route.ts                       ← upload logo lokal
 app/api/local/uploads/[...file]/route.ts            ← serve file yang diupload
 app/api/local/stats/route.ts
-scripts/set-mode.js                                 ← helper nyala/matiin flag sebelum build
+scripts/set-mode.js                                 ← helper nyala/matiin flag sebelum build (.env.production.local)
+scripts/set-dev-mode.js                              ← helper sama untuk `npm run dev` (.env.local)
 .env.production.local.example
 ```
 
