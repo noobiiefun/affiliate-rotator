@@ -1,52 +1,18 @@
--- ============================================================
--- MIGRATION v4 — Spotlight, Kupon, Flash Sale Timer
--- Jalankan di Supabase SQL Editor
--- ============================================================
+-- migration_v4.sql
+-- Fitur: Siklus Otomatis Mati/Nyala rotator + Label Badge custom.
+-- Jalankan ini di Supabase → SQL Editor (sekali saja, aman dijalankan berkali-kali).
+-- Hanya diperlukan untuk MODE ONLINE — mode offline tidak butuh migration ini
+-- (data lokalnya otomatis dapat kolom baru begitu aplikasi di-update).
 
--- 1. Tambah kolom spotlight ke rotator_items
-alter table rotator_items
-  add column if not exists spotlight_duration int default null,
-  -- durasi dalam detik (null = pakai interval normal rotator)
-  -- contoh: 900 = 15 menit spotlight
-  add column if not exists spotlight_active boolean default false;
-  -- true = sedang dalam mode spotlight
+ALTER TABLE rotators
+  ADD COLUMN IF NOT EXISTS cycle_enabled boolean NOT NULL DEFAULT false,
+  ADD COLUMN IF NOT EXISTS cycle_on_min  integer NOT NULL DEFAULT 30,
+  ADD COLUMN IF NOT EXISTS cycle_off_min integer NOT NULL DEFAULT 10;
 
--- 2. Tambah kolom kupon & flash sale ke products
-alter table products
-  add column if not exists coupon_code    text default null,
-  add column if not exists coupon_label   text default null,
-  -- label kupon, misal "DISKON20" atau "GRATIS ONGKIR"
-  add column if not exists sale_ends_at   timestamptz default null,
-  -- waktu berakhirnya flash sale
-  add column if not exists sale_label     text default null;
-  -- label sale, misal "Flash Sale!" atau "Limited Time"
-
--- 3. Tabel untuk sound alerts (opsional, untuk OBS)
-create table if not exists spotlight_events (
-  id          uuid primary key default uuid_generate_v4(),
-  rotator_id  uuid references rotators(id) on delete cascade,
-  product_id  uuid references products(id) on delete cascade,
-  started_at  timestamptz default now(),
-  ends_at     timestamptz not null,
-  is_active   boolean default true
-);
-
--- RLS untuk spotlight_events
-alter table spotlight_events enable row level security;
-
-create policy "Public read spotlight events"
-  on spotlight_events for select using (true);
-
-create policy "Anon full access spotlight"
-  on spotlight_events for all to anon
-  using (true) with check (true);
-
-create policy "Auth full access spotlight"
-  on spotlight_events for all
-  using (auth.role() = 'authenticated');
-
--- Index
-create index if not exists idx_spotlight_rotator
-  on spotlight_events(rotator_id, is_active);
-
-select 'Migration v4 selesai! ✅' as status;
+-- badge_label disimpan di dalam kolom theme_config (jsonb) yang sudah ada,
+-- jadi tidak perlu kolom baru. Baris ini cuma mengisi default untuk rotator
+-- LAMA yang dibuat sebelum fitur ini ada (rotator baru otomatis dapat default
+-- dari aplikasi):
+UPDATE rotators
+SET theme_config = theme_config || '{"badge_label": "PROMO SEKARANG"}'::jsonb
+WHERE theme_config IS NOT NULL AND NOT (theme_config ? 'badge_label');

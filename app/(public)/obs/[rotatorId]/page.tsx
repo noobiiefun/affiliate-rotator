@@ -6,7 +6,7 @@ import QRCode from 'qrcode'
 import { supabase } from '@/lib/supabase'
 import { getRotatorForObs, trackClick, OFFLINE } from '@/lib/data'
 import { Product, Rotator, ThemeConfig, DEFAULT_THEME, MARKETPLACE_INFO } from '@/types'
-import { formatRupiah, getBaseUrl } from '@/lib/utils'
+import { formatRupiah, getBaseUrl, getRotatorCycleState } from '@/lib/utils'
 
 interface Item {
   id: string; position: number
@@ -40,6 +40,7 @@ export default function ObsOverlayPage() {
   const [loaded,     setLoaded]     = useState(false)
   const [animating,  setAnimating]  = useState(false)
   const [splCountdown, setSplCountdown] = useState('')
+  const [cycleOff, setCycleOff] = useState(false)
   const audioRef = useRef<AudioContext | null>(null)
   const prevSpotlightRef = useRef<string | null>(null)
 
@@ -134,6 +135,16 @@ export default function ObsOverlayPage() {
     return () => clearInterval(iv)
   }, [spotlight])
 
+  // Siklus otomatis mati/nyala — dihitung murni dari waktu (jalan sama di
+  // mode online maupun offline, tidak butuh polling server).
+  useEffect(() => {
+    if (!rotator) return
+    const tick = () => setCycleOff(getRotatorCycleState(rotator).isOff)
+    tick()
+    const iv = setInterval(tick, 1000)
+    return () => clearInterval(iv)
+  }, [rotator?.cycle_enabled, rotator?.cycle_on_min, rotator?.cycle_off_min])
+
   // Generate QR
   // Mode Offline: QR langsung berisi link affiliate — begitu discan, HP penonton
   // langsung ke marketplace tanpa mampir ke halaman/app ini sama sekali.
@@ -186,6 +197,11 @@ export default function ObsOverlayPage() {
         {!rotator ? `Rotator "${rotatorId}" tidak ditemukan` : 'Tidak ada produk aktif'}
       </div>
     </div>
+  )
+
+  // Sedang di periode "mati" pada siklus otomatis — kosongkan overlay total.
+  if (cycleOff) return (
+    <div style={{ width:'100vw', height:'100vh', background:'transparent' }} />
   )
 
   const product  = currentItem?.product
@@ -248,7 +264,7 @@ export default function ObsOverlayPage() {
               ) : (
                 <div style={{ background:`${spotlightAccent}33`, borderRadius:6, padding:'3px 8px', display:'flex', alignItems:'center', gap:4 }}>
                   <div style={{ width:5, height:5, borderRadius:'50%', background:spotlightAccent, boxShadow:`0 0 5px ${spotlightAccent}` }} />
-                  <span style={{ color:spotlightAccent, fontSize:9, fontWeight:700, letterSpacing:'0.05em' }}>PROMO SEKARANG</span>
+                  <span style={{ color:spotlightAccent, fontSize:9, fontWeight:700, letterSpacing:'0.05em' }}>{theme.badge_label || 'PROMO SEKARANG'}</span>
                 </div>
               )}
 

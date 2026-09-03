@@ -141,6 +141,7 @@ export function createRotator(payload: Partial<Rotator>): { data?: Rotator; erro
     id: newId(), created_at: nowISO(), updated_at: nowISO(),
     description: null, group_id: null, interval_sec: 10, is_active: true,
     theme_config: DEFAULT_THEME,
+    cycle_enabled: false, cycle_on_min: 30, cycle_off_min: 10,
     ...payload,
   } as Rotator
   db.rotators.push(item)

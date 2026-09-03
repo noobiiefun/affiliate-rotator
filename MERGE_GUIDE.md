@@ -4,6 +4,26 @@ Paket ini menambahkan **Mode Offline** ke project kamu tanpa mengubah/menghapus
 mode online yang sudah ada. Semua fitur (gambar produk, kecepatan rotasi, tema,
 grup, drag-reorder) tetap sama persis di kedua mode.
 
+## Update terbaru: Siklus Otomatis Mati/Nyala + Label Badge Custom
+
+Dua fitur baru ini jalan sama persis di mode **online maupun offline** (dihitung
+murni dari waktu, tidak ada perbedaan implementasi antar mode):
+
+1. **Siklus Otomatis Mati/Nyala** (di tab "Pengaturan Dasar" saat edit rotator):
+   toggle "Siklus Otomatis Mati" + dua input menit — "Tampil selama (menit)"
+   dan "Mati selama (menit)". Kalau aktif, overlay OBS otomatis kosong total
+   selama periode "mati", lalu muncul lagi sendiri sesuai jadwal, berulang
+   terus selama live berjalan. Tidak perlu direstart manual.
+2. **Label Badge Custom** (di tab "Tema & Tampilan"): teks "PROMO SEKARANG"
+   yang tampil di atas nama produk sekarang bisa diganti bebas, misal
+   "HARGA SPESIAL", "KHUSUS HARI INI", dll — per rotator.
+
+**Kalau kamu pakai mode online (Supabase):** jalankan
+`supabase/migration_v4.sql` di Supabase → SQL Editor (sekali saja) supaya
+kolom `cycle_enabled`, `cycle_on_min`, `cycle_off_min` tersedia di tabel
+`rotators`. Mode offline tidak perlu langkah ini — otomatis jalan setelah
+patch di-pasang.
+
 ## Apa yang berubah, singkatnya
 
 | Sebelum | Sesudah (Mode Offline) |

@@ -41,7 +41,8 @@
       ".env.production.local",
       "supabase/schema.sql",
       "supabase/migration_v2.sql",
-      "supabase/migration_v3.sql"
+      "supabase/migration_v3.sql",
+      "supabase/migration_v4.sql"
     ],
     "extraResources": [
       {

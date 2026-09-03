@@ -33,6 +33,9 @@ export default function RotatorForm({ rotator }: Props) {
     group_id:     rotator?.group_id     || '',
     interval_sec: rotator?.interval_sec ?? 10,
     is_active:    rotator?.is_active    ?? true,
+    cycle_enabled: rotator?.cycle_enabled ?? false,
+    cycle_on_min:  rotator?.cycle_on_min  ?? 30,
+    cycle_off_min: rotator?.cycle_off_min ?? 10,
   })
 
   const [theme, setTheme] = useState<ThemeConfig>(
@@ -73,6 +76,9 @@ export default function RotatorForm({ rotator }: Props) {
       interval_sec: form.interval_sec,
       is_active:    form.is_active,
       theme_config: theme,
+      cycle_enabled: form.cycle_enabled,
+      cycle_on_min:  form.cycle_on_min,
+      cycle_off_min: form.cycle_off_min,
     }
 
     const { data, error: err } = await saveRotator(payload, isEdit ? rotator.id : undefined)
@@ -179,6 +185,40 @@ export default function RotatorForm({ rotator }: Props) {
             </div>
           </div>
 
+          {/* Siklus Otomatis (off interval) */}
+          <div className="pt-2 border-t border-gray-100">
+            <div className="flex items-center justify-between mb-1">
+              <div>
+                <p className="text-sm font-medium text-gray-700">Siklus Otomatis Mati</p>
+                <p className="text-xs text-gray-400">Rotator otomatis sembunyi berkala, lalu tampil lagi sendiri</p>
+              </div>
+              <button type="button" onClick={() => setForm(f => ({ ...f, cycle_enabled: !f.cycle_enabled }))}
+                className={`relative w-11 h-6 rounded-full transition-colors flex-shrink-0 ${form.cycle_enabled ? 'bg-purple-500' : 'bg-gray-200'}`}>
+                <div className={`absolute top-0.5 w-5 h-5 bg-white rounded-full shadow-sm transition-transform ${form.cycle_enabled ? 'translate-x-5' : 'translate-x-0.5'}`} />
+              </button>
+            </div>
+
+            {form.cycle_enabled && (
+              <div className="grid grid-cols-2 gap-3 mt-3 bg-purple-50/50 border border-purple-100 rounded-lg p-3">
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Tampil selama (menit)</label>
+                  <input type="number" min={1} max={999} value={form.cycle_on_min}
+                    onChange={e => setForm(f => ({ ...f, cycle_on_min: Math.max(1, parseInt(e.target.value) || 1) }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white" />
+                </div>
+                <div>
+                  <label className="block text-xs font-medium text-gray-600 mb-1">Mati selama (menit)</label>
+                  <input type="number" min={1} max={999} value={form.cycle_off_min}
+                    onChange={e => setForm(f => ({ ...f, cycle_off_min: Math.max(1, parseInt(e.target.value) || 1) }))}
+                    className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500 bg-white" />
+                </div>
+                <p className="col-span-2 text-xs text-gray-400">
+                  Contoh: tampil 30 menit → mati 10 menit → tampil lagi 30 menit, dan seterusnya selama live berjalan.
+                </p>
+              </div>
+            )}
+          </div>
+
           {/* Status */}
           <div className="flex items-center justify-between pt-2 border-t border-gray-100">
             <div>
@@ -210,7 +250,7 @@ export default function RotatorForm({ rotator }: Props) {
             }}>
               <div style={{ display:'flex', alignItems:'center', gap:6, marginBottom:6 }}>
                 <div style={{ width:6, height:6, borderRadius:'50%', background: theme.accent_color }} />
-                <span style={{ color: theme.accent_color, fontSize:9, fontWeight:700 }}>PROMO SEKARANG</span>
+                <span style={{ color: theme.accent_color, fontSize:9, fontWeight:700 }}>{theme.badge_label || 'PROMO SEKARANG'}</span>
                 {theme.logo_url && <img src={theme.logo_url} alt="logo" style={{ height:14, marginLeft:'auto', objectFit:'contain' }} />}
               </div>
               <div style={{ color: theme.text_color, fontSize:11, fontWeight:600 }}>Nama Produk Contoh</div>
@@ -220,6 +260,16 @@ export default function RotatorForm({ rotator }: Props) {
                 <div style={{ width:'60%', height:'100%', background: theme.accent_color, borderRadius:2 }} />
               </div>
             </div>
+          </div>
+
+          {/* Label badge custom */}
+          <div className="bg-white border border-gray-200 rounded-xl p-5">
+            <label className="block text-sm font-medium text-gray-700 mb-1.5">Label Badge</label>
+            <input type="text" value={theme.badge_label ?? ''} maxLength={30}
+              onChange={e => setTheme(t => ({ ...t, badge_label: e.target.value }))}
+              placeholder="Contoh: PROMO SEKARANG, HARGA SPESIAL, KHUSUS HARI INI..."
+              className="w-full border border-gray-200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-purple-500" />
+            <p className="text-xs text-gray-400 mt-1">Teks kecil di atas nama produk pada kartu overlay OBS.</p>
           </div>
 
           <div className="bg-white border border-gray-200 rounded-xl p-6 space-y-5">

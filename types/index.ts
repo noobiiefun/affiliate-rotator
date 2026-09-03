@@ -19,6 +19,7 @@ export interface ThemeConfig {
   show_marketplace: boolean
   border_radius:    number
   opacity:          number   // 0.0 - 1.0
+  badge_label:      string   // teks badge di atas nama produk, default 'PROMO SEKARANG'
 }
 
 export const DEFAULT_THEME: ThemeConfig = {
@@ -32,6 +33,7 @@ export const DEFAULT_THEME: ThemeConfig = {
   show_marketplace: true,
   border_radius:    20,
   opacity:          0.95,
+  badge_label:      'PROMO SEKARANG',
 }
 
 export interface Product {
@@ -96,6 +98,10 @@ export interface Rotator {
   interval_sec: number
   is_active:    boolean
   theme_config: ThemeConfig
+  // ── Siklus otomatis nyala/mati ──────────────────────────
+  cycle_enabled: boolean  // kalau true, rotator otomatis mati-nyala berulang
+  cycle_on_min:  number   // berapa menit rotator TAMPIL sebelum mati
+  cycle_off_min: number   // berapa menit rotator MATI sebelum tampil lagi
   created_at:   string
   updated_at:   string
   // joined
